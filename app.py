@@ -54,16 +54,16 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = TextSendMessage(text=event.message.text)  #line input
-    # response = openai.Completion.create(
-    #     engine = "text-davinci-003",    # select model
-    #     prompt = "你好",     
-    #     max_tokens = 512,               # response tokens
-    #     temperature = 1,                # diversity related NLG模型
-    #     top_p = 0.75,                   # diversity related
-    #     n = 1,                          # num of response
-    # )
-    # completed_text = response["choices"][0]["text"]
-    line_bot_api.reply_message(event.reply_token,message)  #line output
+    response = openai.Completion.create(
+        engine = "text-davinci-003",    # select model
+        prompt = "你好",     
+        max_tokens = 512,               # response tokens
+        temperature = 1,                # diversity related NLG模型
+        top_p = 0.75,                   # diversity related
+        n = 1,                          # num of response
+    )
+    completed_text = response["choices"][0]["text"]
+    line_bot_api.reply_message(event.reply_token,completed_text)  #line output
 
 
 #主程式
