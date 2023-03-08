@@ -22,7 +22,7 @@ from linebot.exceptions import (
 from linebot.models import *
 
 app = Flask(__name__)
-close_flag = 0
+
 # 必須放上自己的Channel Access Token
 line_bot_api = LineBotApi('ZDKxXNN1YeHrqa8+lOlgv9RjOl/2kCVpO5xoDLC3SHfnBBdA9IA3Z/fOQPiHEJhvQ9ImNXMMF/q6Dzl5Rk9UMtpi0a+NJzg+81oARe6dOeaubeXm42HCnNyGJ1j9+oBmOUj+UrZaXLYD3fYc/ybLmgdB04t89/1O/w1cDnyilFU=')
 # 必須放上自己的Channel Secret
@@ -58,28 +58,25 @@ def handle_message(event):
     message = text=event.message.text  #line input
 
 
-    if "卡米兔安靜" in message:
-        close_flag=1
-        text_message = TextSendMessage('好的遵命')              # 轉型
-        line_bot_api.reply_message(event.reply_token,text_message)  #line output
-    elif "卡米兔說話" in message:
-        close_flag=0
-        text_message = TextSendMessage('好的遵命')              # 轉型
-        line_bot_api.reply_message(event.reply_token,text_message)  #line output            
-    else:
-        if (close_flag==0):
-            openai.api_key = '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'
-            response = openai.Completion.create(
-                engine = "text-davinci-003",    # select model
-                prompt = message,     
-                max_tokens = 512,               # response tokens
-                temperature = 1,                # diversity related NLG模型
-                top_p = 0.75,                   # diversity related
-                n = 1,                          # num of response
-            )
-            reply_msg = response["choices"][0]["text"].replace('\n','')
-            text_message = TextSendMessage(text=reply_msg)              # 轉型
-            line_bot_api.reply_message(event.reply_token,text_message)  #line output
+    # if "卡米兔安靜" in message:
+    #     text_message = TextSendMessage('好的遵命')              # 轉型
+    #     line_bot_api.reply_message(event.reply_token,text_message)  #line output
+    # elif "卡米兔說話" in message:
+    #     text_message = TextSendMessage('好的遵命')              # 轉型
+    #     line_bot_api.reply_message(event.reply_token,text_message)  #line output            
+    # else:
+    openai.api_key = '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'
+    response = openai.Completion.create(
+        engine = "text-davinci-003",    # select model
+        prompt = message,     
+        max_tokens = 512,               # response tokens
+        temperature = 1,                # diversity related NLG模型
+        top_p = 0.75,                   # diversity related
+        n = 1,                          # num of response
+    )
+    reply_msg = response["choices"][0]["text"].replace('\n','')
+    text_message = TextSendMessage(text=reply_msg)              # 轉型
+    line_bot_api.reply_message(event.reply_token,text_message)  #line output
 
 
 #主程式
