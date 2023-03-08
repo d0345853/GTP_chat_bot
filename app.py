@@ -28,7 +28,7 @@ line_bot_api = LineBotApi('ZDKxXNN1YeHrqa8+lOlgv9RjOl/2kCVpO5xoDLC3SHfnBBdA9IA3Z
 # 必須放上自己的Channel Secret
 handler = WebhookHandler('91ba25530818a52375c97fbd27aac56c')
 
-line_bot_api.push_message('Ub08558de58b09af13f8e03da6a5dfca6', TextSendMessage(text='兔兔來囉'))
+line_bot_api.push_message('Ub08558de58b09af13f8e03da6a5dfca6', TextSendMessage(text='哈囉哈囉~兔兔來囉!'))
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -57,12 +57,17 @@ def handle_message(event):
     #message = TextSendMessage(text=event.message.text)  #line input
     message = text=event.message.text  #line input
 
-    if close_flag==0:
-        if message=='卡米兔安靜':
-            close_flag=1
-            text_message = TextSendMessage('好的遵命')              # 轉型
-            line_bot_api.reply_message(event.reply_token,text_message)  #line output
-        else:
+
+    if "卡米兔安靜" in message:
+        close_flag=1
+        text_message = TextSendMessage('好的遵命')              # 轉型
+        line_bot_api.reply_message(event.reply_token,text_message)  #line output
+    elif "卡米兔說話" in message:
+        close_flag=0
+        text_message = TextSendMessage('好的遵命')              # 轉型
+        line_bot_api.reply_message(event.reply_token,text_message)  #line output            
+    else:
+        if (close_flag==0):
             openai.api_key = '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'
             response = openai.Completion.create(
                 engine = "text-davinci-003",    # select model
@@ -76,11 +81,7 @@ def handle_message(event):
             text_message = TextSendMessage(text=reply_msg)              # 轉型
             line_bot_api.reply_message(event.reply_token,text_message)  #line output
 
-    if close_flag==1:
-        if message=='卡米兔說話':
-            close_flag=0
-            text_message = TextSendMessage('好的遵命')              # 轉型
-            line_bot_api.reply_message(event.reply_token,text_message)  #line output
+
 #主程式
 import os
 if __name__ == "__main__":
