@@ -1,12 +1,3 @@
-from deta import app
-# define a function to run on a schedule
-# the function must take an event as an argument
-@app.lib.cron()
-def cron_job(event):
-    return "running on a schedule"
-
-# define a function to run on a schedule
-# the function must take an event as an argument
 # -*- coding: utf-8 -*-
 """
 Created on Wed Jun  2 21:16:35 2021
