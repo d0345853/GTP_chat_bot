@@ -12,6 +12,17 @@ Line Bot機器人串接與測試
 #載入LineBot所需要的套件
 from flask import Flask, request, abort
 import openai
+openai.api_key = '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'
+
+response = openai.Completion.create(
+    engine = "text-davinci-003",    # select model
+    prompt = "ChatGPT是什麼？",     
+    max_tokens = 512,               # response tokens
+    temperature = 1,                # diversity related
+    top_p = 0.75,                   # diversity related
+    n = 1,                          # num of response
+)
+
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -51,8 +62,20 @@ def callback():
 ##### 基本上程式編輯都在這個function #####
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    message = TextSendMessage(text=event.message.text)
-    line_bot_api.reply_message(event.reply_token,message)
+    message = TextSendMessage(text=event.message.text)  #line input
+    response = openai.Completion.create(
+        engine = "text-davinci-003",    # select model
+        prompt = message,     
+        max_tokens = 512,               # response tokens
+        temperature = 1,                # diversity related NLG模型
+        top_p = 0.75,                   # diversity related
+        n = 1,                          # num of response
+    )
+    completed_text = response["choices"][0]["text"]
+    line_bot_api.reply_message(event.reply_token,completed_text)  #line output
+
+completed_text = response["choices"][0]["text"]
+print(completed_text)
 
 #主程式
 import os
