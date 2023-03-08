@@ -10,3 +10,4 @@ emoji
 pyshorteners
 scipy
 openai
+json
