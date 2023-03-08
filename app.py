@@ -12,7 +12,6 @@ Line Bot機器人串接與測試
 #載入LineBot所需要的套件
 from flask import Flask, request, abort
 import openai
-openai.api_key = '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'
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -53,17 +52,23 @@ def callback():
 ##### 基本上程式編輯都在這個function #####
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+
+    
     message = TextSendMessage(text=event.message.text)  #line input
+    openai.api_key = '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'
+
     response = openai.Completion.create(
         engine = "text-davinci-003",    # select model
-        prompt = "你好",     
+        prompt = "你是誰",     
         max_tokens = 512,               # response tokens
         temperature = 1,                # diversity related NLG模型
         top_p = 0.75,                   # diversity related
         n = 1,                          # num of response
     )
-    completed_text = response["choices"][0]["text"]
-    line_bot_api.reply_message(event.reply_token,completed_text)  #line output
+    reply_msg = response["choices"][0]["text"].replace('\n','')
+    text_message = TextSendMessage(text=reply_msg)              # 轉型
+    line_bot_api.reply_message(event.reply_token,text_message)  #line output
+
 
 
 #主程式
