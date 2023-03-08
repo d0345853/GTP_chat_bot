@@ -14,14 +14,7 @@ from flask import Flask, request, abort
 import openai
 openai.api_key = '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'
 
-response = openai.Completion.create(
-    engine = "text-davinci-003",    # select model
-    prompt = "ChatGPT是什麼？",     
-    max_tokens = 512,               # response tokens
-    temperature = 1,                # diversity related
-    top_p = 0.75,                   # diversity related
-    n = 1,                          # num of response
-)
+
 
 from linebot import (
     LineBotApi, WebhookHandler
