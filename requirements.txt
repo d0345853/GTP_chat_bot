@@ -9,3 +9,4 @@ SnowNLP
 emoji
 pyshorteners
 scipy
+openai
