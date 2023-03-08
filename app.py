@@ -28,7 +28,7 @@ line_bot_api = LineBotApi('ZDKxXNN1YeHrqa8+lOlgv9RjOl/2kCVpO5xoDLC3SHfnBBdA9IA3Z
 # 必須放上自己的Channel Secret
 handler = WebhookHandler('91ba25530818a52375c97fbd27aac56c')
 
-line_bot_api.push_message('Ub08558de58b09af13f8e03da6a5dfca6', TextSendMessage(text='你可以開始了'))
+line_bot_api.push_message('Ub08558de58b09af13f8e03da6a5dfca6', TextSendMessage(text='兔兔問好'))
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -54,12 +54,14 @@ def callback():
 def handle_message(event):
 
     
-    message = TextSendMessage(text=event.message.text)  #line input
+    #message = TextSendMessage(text=event.message.text)  #line input
+    message = text=event.message.text  #line input
+
     openai.api_key = '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'
 
     response = openai.Completion.create(
         engine = "text-davinci-003",    # select model
-        prompt = "你是誰",     
+        prompt = message,     
         max_tokens = 512,               # response tokens
         temperature = 1,                # diversity related NLG模型
         top_p = 0.75,                   # diversity related
