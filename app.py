@@ -65,7 +65,7 @@ def handle_message(event):
         n = 1,                          # num of response
     )
     completed_text = response["choices"][0]["text"]
-    line_bot_api.reply_message(event.reply_token,completed_text)  #line output
+    line_bot_api.reply_message(event.reply_token,message)  #line output
 
 completed_text = response["choices"][0]["text"]
 print(completed_text)
