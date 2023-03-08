@@ -65,7 +65,7 @@ def handle_message(event):
     message = TextSendMessage(text=event.message.text)  #line input
     response = openai.Completion.create(
         engine = "text-davinci-003",    # select model
-        prompt = message,     
+        prompt = "你好",     
         max_tokens = 512,               # response tokens
         temperature = 1,                # diversity related NLG模型
         top_p = 0.75,                   # diversity related
