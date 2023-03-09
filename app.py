@@ -99,7 +99,7 @@ def handle_message(event):
     # reply_msg = response[-1]['content'].strip()
 
 
-    text_message = TextSendMessage(text=reply_msg)              # 轉型
+    text_message = TextSendMessage(text=message_log)              # 轉型
     line_bot_api.reply_message(event.reply_token,text_message)  #line output
 
 
