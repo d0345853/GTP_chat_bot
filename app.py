@@ -77,15 +77,13 @@ def handle_message(event):
     # )
     #reply_msg = response["choices"][0]["text"].replace('\n','')
 
-    message_log.append({"role": "user", "content": message})
+
     # Add a message from the chatbot to the conversation history
     message_log.append({"role": "assistant", "content": "You are a helpful assistant."})
+    message_log.append({"role": "user", "content": message})
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",  # The name of the OpenAI chatbot model to use
         messages=message_log,   # The conversation history up to this point, as a list of dictionaries
-        max_tokens=2000,        # The maximum number of tokens (words or subwords) in the generated response
-        stop=None,              # The stopping sequence for the generated response, if any (not used here)
-        temperature=0.8,        # The "creativity" of the generated response (higher temperature = more creative)
     )
     #reply_msg = response.choices[0].message.content.replace('\n','')
     # reply_msg = response.choices[0].message.content
@@ -93,7 +91,7 @@ def handle_message(event):
     #     if "text" in choice:
     #         reply_msg =choice.text
     #         break
-    reply_msg = response[-1]['content'].strip()
+    reply_msg = format(response[-1]['content'].strip())
     # If no response with text is found, return the first response's content (which may be empty)
     # return response.choices[0].message.content
     # reply_msg = response[-1]['content'].strip()
