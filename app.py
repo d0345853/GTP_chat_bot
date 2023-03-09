@@ -75,9 +75,9 @@ def handle_message(event):
     #     top_p = 0.75,                   # diversity related
     #     n = 1,                          # num of response
     # )
-    response = openai.Completion.create(
-        model="gpt-3.5-turbo",
-        messages= message)
+    response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages= message)
+
+
     reply_msg = response["choices"][0]["text"].replace('\n','')
     text_message = TextSendMessage(text=reply_msg)              # 轉型
     line_bot_api.reply_message(event.reply_token,text_message)  #line output
