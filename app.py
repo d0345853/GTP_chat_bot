@@ -23,8 +23,6 @@ from linebot.models import *
 
 app = Flask(__name__)
 
-
-##################################
 # 必須放上自己的Channel Access Token
 line_bot_api = LineBotApi('ZDKxXNN1YeHrqa8+lOlgv9RjOl/2kCVpO5xoDLC3SHfnBBdA9IA3Z/fOQPiHEJhvQ9ImNXMMF/q6Dzl5Rk9UMtpi0a+NJzg+81oARe6dOeaubeXm42HCnNyGJ1j9+oBmOUj+UrZaXLYD3fYc/ybLmgdB04t89/1O/w1cDnyilFU=')
 # 必須放上自己的Channel Secret
@@ -32,27 +30,6 @@ handler = WebhookHandler('91ba25530818a52375c97fbd27aac56c')
 # 更新訊息
 # line_bot_api.push_message('Ub08558de58b09af13f8e03da6a5dfca6', TextSendMessage(text='哈囉哈囉~兔兔來囉!'))
 
-
-# ##################################
-# class GroupTicket(models.Model):
-#     groupId = models.CharField(max_length=35)
-#     expire = models.DateTimeField(null=True)
-#     createDate = models.DateTimeField()
-#     def createByGroupId(groupId):
-#         GroupTicket.objects.filter(groupId=groupId).delete()
-#         groupTicket = GroupTicket(
-#             groupId = groupId,
-#             expire = timezone.now() + timedelta(minutes = 5),
-#             createDate = timezone.now()
-#         )
-#         groupTicket.save()
-#     def isExpireByGroupId(groupId):
-#         groupTickets = GroupTicket.objects.filter(groupId=groupId)
-#         if groupTickets.exists() == False:
-#             return False
-#         groupTicket = groupTickets[0]
-#         return timezone.now() < groupTicket.expire
-    
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -78,18 +55,18 @@ def handle_message(event):
 
     
     #message = TextSendMessage(text=event.message.text)  #line input
-    # message = text=event.message.text  #line input
-    # if event.source.type == 'group' and message == '卡米兔說話':
-    #     GroupTicket.createByGroupId(event.source.group_id)
-    #     line_bot_api.reply_message(event.reply_token,'好喔好喔，兔兔來囉')  #line output
-    # elif event.source.type == 'group' and message == '卡米兔安靜':
-    #     GroupTicket.objects.filter(groupId=event.source.group_id).delete()
-    #     line_bot_api.reply_message(event.reply_token,'好喔好喔，安靜模式')  #line output
-    # elif (event.source.type == 'group' and GroupTicket.isExpireByGroupId(event.source.group_id) or event.source.type != 'group'):
+    message = text=event.message.text  #line input
 
+
+    # if "卡米兔安靜" in message:
+    #     text_message = TextSendMessage('好的遵命')              # 轉型
+    #     line_bot_api.reply_message(event.reply_token,text_message)  #line output
+    # elif "卡米兔說話" in message:
+    #     text_message = TextSendMessage('好的遵命')              # 轉型
+    #     line_bot_api.reply_message(event.reply_token,text_message)  #line output            
+    # else:
 
     openai.api_key = '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'
- 
     # response = openai.Completion.create(
     #     engine = "text-davinci-003",    # select model
     #     prompt = message,     
