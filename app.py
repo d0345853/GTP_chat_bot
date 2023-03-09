@@ -67,14 +67,17 @@ def handle_message(event):
     # else:
 
     openai.api_key = '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'
+    # response = openai.Completion.create(
+    #     engine = "text-davinci-003",    # select model
+    #     prompt = message,     
+    #     max_tokens = 512,               # response tokens
+    #     temperature = 1,                # diversity related NLG模型
+    #     top_p = 0.75,                   # diversity related
+    #     n = 1,                          # num of response
+    # )
     response = openai.Completion.create(
-        engine = "gpt-3.5-turbo",    # select model
-        prompt = message,     
-        max_tokens = 512,               # response tokens
-        temperature = 1,                # diversity related NLG模型
-        top_p = 0.75,                   # diversity related
-        n = 1,                          # num of response
-    )
+        model="gpt-3.5-turbo",
+        messages= message)
     reply_msg = response["choices"][0]["text"].replace('\n','')
     text_message = TextSendMessage(text=reply_msg)              # 轉型
     line_bot_api.reply_message(event.reply_token,text_message)  #line output
