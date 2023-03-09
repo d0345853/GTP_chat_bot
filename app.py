@@ -33,25 +33,25 @@ handler = WebhookHandler('91ba25530818a52375c97fbd27aac56c')
 # line_bot_api.push_message('Ub08558de58b09af13f8e03da6a5dfca6', TextSendMessage(text='哈囉哈囉~兔兔來囉!'))
 
 
-##################################
-class GroupTicket(models.Model):
-    groupId = models.CharField(max_length=35)
-    expire = models.DateTimeField(null=True)
-    createDate = models.DateTimeField()
-    def createByGroupId(groupId):
-        GroupTicket.objects.filter(groupId=groupId).delete()
-        groupTicket = GroupTicket(
-            groupId = groupId,
-            expire = timezone.now() + timedelta(minutes = 5),
-            createDate = timezone.now()
-        )
-        groupTicket.save()
-    def isExpireByGroupId(groupId):
-        groupTickets = GroupTicket.objects.filter(groupId=groupId)
-        if groupTickets.exists() == False:
-            return False
-        groupTicket = groupTickets[0]
-        return timezone.now() < groupTicket.expire
+# ##################################
+# class GroupTicket(models.Model):
+#     groupId = models.CharField(max_length=35)
+#     expire = models.DateTimeField(null=True)
+#     createDate = models.DateTimeField()
+#     def createByGroupId(groupId):
+#         GroupTicket.objects.filter(groupId=groupId).delete()
+#         groupTicket = GroupTicket(
+#             groupId = groupId,
+#             expire = timezone.now() + timedelta(minutes = 5),
+#             createDate = timezone.now()
+#         )
+#         groupTicket.save()
+#     def isExpireByGroupId(groupId):
+#         groupTickets = GroupTicket.objects.filter(groupId=groupId)
+#         if groupTickets.exists() == False:
+#             return False
+#         groupTicket = groupTickets[0]
+#         return timezone.now() < groupTicket.expire
     
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -78,54 +78,54 @@ def handle_message(event):
 
     
     #message = TextSendMessage(text=event.message.text)  #line input
-    message = text=event.message.text  #line input
-    if event.source.type == 'group' and message == '卡米兔說話':
-        GroupTicket.createByGroupId(event.source.group_id)
-        line_bot_api.reply_message(event.reply_token,'好喔好喔，兔兔來囉')  #line output
-    elif event.source.type == 'group' and message == '卡米兔安靜':
-        GroupTicket.objects.filter(groupId=event.source.group_id).delete()
-        line_bot_api.reply_message(event.reply_token,'好喔好喔，安靜模式')  #line output
-    elif (event.source.type == 'group' and GroupTicket.isExpireByGroupId(event.source.group_id) or event.source.type != 'group'):
+    # message = text=event.message.text  #line input
+    # if event.source.type == 'group' and message == '卡米兔說話':
+    #     GroupTicket.createByGroupId(event.source.group_id)
+    #     line_bot_api.reply_message(event.reply_token,'好喔好喔，兔兔來囉')  #line output
+    # elif event.source.type == 'group' and message == '卡米兔安靜':
+    #     GroupTicket.objects.filter(groupId=event.source.group_id).delete()
+    #     line_bot_api.reply_message(event.reply_token,'好喔好喔，安靜模式')  #line output
+    # elif (event.source.type == 'group' and GroupTicket.isExpireByGroupId(event.source.group_id) or event.source.type != 'group'):
 
 
-        openai.api_key = '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'
+    openai.api_key = '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'
  
-        # response = openai.Completion.create(
-        #     engine = "text-davinci-003",    # select model
-        #     prompt = message,     
-        #     max_tokens = 512,               # response tokens
-        #     temperature = 1,                # diversity related NLG模型
-        #     top_p = 0.75,                   # diversity related
-        #     n = 1,                          # num of response
-        # )
-        #reply_msg = response["choices"][0]["text"].replace('\n','')
+    # response = openai.Completion.create(
+    #     engine = "text-davinci-003",    # select model
+    #     prompt = message,     
+    #     max_tokens = 512,               # response tokens
+    #     temperature = 1,                # diversity related NLG模型
+    #     top_p = 0.75,                   # diversity related
+    #     n = 1,                          # num of response
+    # )
+    #reply_msg = response["choices"][0]["text"].replace('\n','')
 
 
-        # Add a message from the chatbot to the conversation history
-        message_log = []
-        message_log.append({'role': 'assistant', 'content': 'You are a helpful assistant.'})
+    # Add a message from the chatbot to the conversation history
+    message_log = []
+    message_log.append({'role': 'assistant', 'content': 'You are a helpful assistant.'})
 
-        message_log.append({'role': 'user', 'content': message})
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # The name of the OpenAI chatbot model to use
-            messages=message_log   # The conversation history up to this point, as a list of dictionaries
-        )
-        message_log.append({'role': response.choices[0].message.role, 'content': response.choices[0].message.content})
+    message_log.append({'role': 'user', 'content': message})
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",  # The name of the OpenAI chatbot model to use
+        messages=message_log   # The conversation history up to this point, as a list of dictionaries
+    )
+    message_log.append({'role': response.choices[0].message.role, 'content': response.choices[0].message.content})
 
-        #reply_msg = response.choices[0].message.content.replace('\n','')
-        # reply_msg = response.choices[0].message.content
-        # for choice in response.choices:
-        #     if "text" in choice:
-        #         reply_msg =choice.text
-        #         break
-        reply_msg = format(message_log[-1]['content'].strip())
-        # If no response with text is found, return the first response's content (which may be empty)
-        # return response.choices[0].message.content
-        # reply_msg = response[-1]['content'].strip()
+    #reply_msg = response.choices[0].message.content.replace('\n','')
+    # reply_msg = response.choices[0].message.content
+    # for choice in response.choices:
+    #     if "text" in choice:
+    #         reply_msg =choice.text
+    #         break
+    reply_msg = format(message_log[-1]['content'].strip())
+    # If no response with text is found, return the first response's content (which may be empty)
+    # return response.choices[0].message.content
+    # reply_msg = response[-1]['content'].strip()
 
 
-        text_message = TextSendMessage(text=reply_msg)              # 轉型
-        line_bot_api.reply_message(event.reply_token,text_message)  #line output
+    text_message = TextSendMessage(text=reply_msg)              # 轉型
+    line_bot_api.reply_message(event.reply_token,text_message)  #line output
 
 
 #主程式
