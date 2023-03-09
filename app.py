@@ -87,6 +87,8 @@ def handle_message(event):
         model="gpt-3.5-turbo",  # The name of the OpenAI chatbot model to use
         messages=message_log   # The conversation history up to this point, as a list of dictionaries
     )
+    message_log.append({'role': response.choices[0].message.role, 'content': response.choices[0].message.content})
+
     #reply_msg = response.choices[0].message.content.replace('\n','')
     # reply_msg = response.choices[0].message.content
     # for choice in response.choices:
