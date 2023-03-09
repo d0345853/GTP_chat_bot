@@ -85,7 +85,7 @@ def handle_message(event):
     elif event.source.type == 'group' and message == '卡米兔安靜':
         GroupTicket.objects.filter(groupId=event.source.group_id).delete()
         line_bot_api.reply_message(event.reply_token,'好喔好喔，安靜模式')  #line output
-    elif (event.source.type == 'group' and GroupTicket.isExpireByGroupId(event.source.group_id)):
+    elif (event.source.type == 'group' and GroupTicket.isExpireByGroupId(event.source.group_id) or event.source.type != 'group'):
 
 
         openai.api_key = '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'
