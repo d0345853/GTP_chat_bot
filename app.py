@@ -95,7 +95,7 @@ def handle_message(event):
     #     if "text" in choice:
     #         reply_msg =choice.text
     #         break
-    reply_msg = format(response[-1]['content'].strip())
+    reply_msg = format(message_log[-1]['content'].strip())
     # If no response with text is found, return the first response's content (which may be empty)
     # return response.choices[0].message.content
     # reply_msg = response[-1]['content'].strip()
