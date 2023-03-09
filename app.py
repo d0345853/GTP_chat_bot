@@ -27,8 +27,8 @@ app = Flask(__name__)
 line_bot_api = LineBotApi('ZDKxXNN1YeHrqa8+lOlgv9RjOl/2kCVpO5xoDLC3SHfnBBdA9IA3Z/fOQPiHEJhvQ9ImNXMMF/q6Dzl5Rk9UMtpi0a+NJzg+81oARe6dOeaubeXm42HCnNyGJ1j9+oBmOUj+UrZaXLYD3fYc/ybLmgdB04t89/1O/w1cDnyilFU=')
 # 必須放上自己的Channel Secret
 handler = WebhookHandler('91ba25530818a52375c97fbd27aac56c')
-
-line_bot_api.push_message('Ub08558de58b09af13f8e03da6a5dfca6', TextSendMessage(text='哈囉哈囉~兔兔來囉!'))
+# 更新訊息
+# line_bot_api.push_message('Ub08558de58b09af13f8e03da6a5dfca6', TextSendMessage(text='哈囉哈囉~兔兔來囉!'))
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -65,9 +65,10 @@ def handle_message(event):
     #     text_message = TextSendMessage('好的遵命')              # 轉型
     #     line_bot_api.reply_message(event.reply_token,text_message)  #line output            
     # else:
+
     openai.api_key = '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'
     response = openai.Completion.create(
-        engine = "text-davinci-003",    # select model
+        engine = "gpt-3.5-turbo",    # select model
         prompt = message,     
         max_tokens = 512,               # response tokens
         temperature = 1,                # diversity related NLG模型
