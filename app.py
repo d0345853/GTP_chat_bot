@@ -83,7 +83,12 @@ def handle_message(event):
         stop=None,              # The stopping sequence for the generated response, if any (not used here)
         temperature=0.8,        # The "creativity" of the generated response (higher temperature = more creative)
     )
-    reply_msg= response.choices[0].message.content.replace('\n','')
+
+    for choice in response.choices:
+        if "text" in choice:
+            reply_msg = choice.text
+            break
+    # reply_msg = response.choices[0].message.content.replace('\n','')
 
     text_message = TextSendMessage(text=reply_msg)              # 轉型
     line_bot_api.reply_message(event.reply_token,text_message)  #line output
