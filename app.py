@@ -96,7 +96,7 @@ def handle_message(event):
     if ("不知道" in reply_msg) or ("我無法" in reply_msg) or ("不理解" in reply_msg) or ("我不懂" in reply_msg) or ("我不能" in reply_msg) or  ("我无法" in reply_msg) or ("我沒" in reply_msg) or ("不明白" in reply_msg) or ("我不太" in reply_msg) or ("不知道" in reply_msg) or ("我不是" in reply_msg) or ("不清楚" in reply_msg)or ("不確定" in reply_msg) or ("不提供" in reply_msg):
         response_2 = openai.Completion.create(
             engine = "text-davinci-003",    # select model
-            prompt = message,     
+            prompt = input_message,     
             max_tokens = 512,               # response tokens
             temperature = 1,                # diversity related NLG模型
             top_p = 0.8,                    # diversity related
