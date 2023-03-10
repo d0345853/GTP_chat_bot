@@ -84,23 +84,56 @@ def handle_message(event):
     # -------------- model 1 --------------     
     # 時間
     if input_message in msgchk_timer:
-        tz = pytz.timezone('Asia/Taipei') # <- put your local timezone here
-        now = datetime.now(tz) # the current time in your local timezone
-        current_time = now.strftime("%H:%M:%S")
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"現在時間：{current_time}"))
+        time_tz = pytz.timezone('Asia/Taipei') # <- put your local timezone here
+        time_now = datetime.now(time_tz) # the current time in your local timezone
+        time_current = time_now.strftime("%H:%M:%S")
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"現在時間：{time_current}"))
 
     #############################################################
     # -------------- model 2 -------------- 
     # 天氣    
     elif ("天氣" in input_message) or ("氣象" in input_message) or ("下雨" in input_message) :
-        #url = '一般天氣預報 - 今明 36 小時天氣預報 JSON 連結'
-        url = 'CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F'
+        # url = '一般天氣預報 - 今明 36 小時天氣預報 JSON 連結'
+        # code 'CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F
+        url = 'https://opendata.cwb.gov.tw/dist/opendata-swagger.html?urls.primaryName=openAPI#/%E9%A0%90%E5%A0%B1/get_v1_rest_datastore_F_C0032_001'
         data = requests.get(url)   # 取得 JSON 檔案的內容為文字
         data_json = data.json()    # 轉換成 JSON 格式
         location = data_json['cwbopendata']['dataset']['location']   # 取出 location 的內容
         for i in location:
             print(f'{i}')
             line_bot_api.reply_message(event.reply_token, TextSendMessage(i))
+
+
+        weather_log = ""
+        weather_url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001"
+        weather_params = {
+            "Authorization": "CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F",
+            "locationName": "台北市",
+        }
+
+        #output
+        weather_response = requests.get(weather_url, params=weather_params)
+
+        #size=200
+        #print(response.status_code) 
+ 
+        if weather_response.status_code == 200:
+
+            data = json.loads(weather_response.text)
+
+            # item
+            weather_location = data["records"]["location"][0]["locationName"]
+            #weather_elements = data["records"]["location"][0]["weatherElement"]
+            weather_state = weather_elements[0]["time"][0]["parameter"]["parameterName"]
+            weather_rain_prob = weather_elements[1]["time"][0]["parameter"]["parameterName"]
+            #min_tem = weather_elements[2]["time"][0]["parameter"]["parameterName"]
+            weather_comfort = weather_elements[3]["time"][0]["parameter"]["parameterName"]
+            weather_max_tem = weather_elements[4]["time"][0]["parameter"]["parameterName"]
+
+            # print
+            weather_log = weather_location + "未來 8 小時" + weather_state + "，" + weather_comfort + "，最高溫" + weather_max_tem + "度，降雨機率" + weather_rain_prob + "%"
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(weather_log))
+
 
     else:
         #############################################################
