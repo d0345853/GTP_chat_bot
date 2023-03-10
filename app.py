@@ -87,7 +87,7 @@ def handle_message(event):
         time_tz = pytz.timezone('Asia/Taipei') # <- put your local timezone here
         time_now = datetime.now(time_tz) # the current time in your local timezone
         time_current = time_now.strftime("%H:%M:%S")
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"!卡米兔報時!台灣時間：{time_current}"))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"現在台灣時間：{time_current}"))
 
     #############################################################
     # -------------- model 2 -------------- 
@@ -98,7 +98,7 @@ def handle_message(event):
 
 
         weather_log = ""
-        weather_url = f"https://opendata.cwb.gov.tw/dist/opendata-swagger.html#/%E9%A0%90%E5%A0%B1/get_v1_rest_datastore_F_C0032_001'"
+        weather_url = f"https://opendata.cwb.gov.tw/dist/opendata-swagger.html#/%E9%A0%90%E5%A0%B1/get_v1_rest_datastore_F_C0032_001"
         weather_params = {
             "Authorization": "CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F",
             "locationName": "台北市",
