@@ -28,7 +28,7 @@ from linebot.models import *
 app = Flask(__name__)
 
 #############################################################
-msgchk_timer = ["現在時間","目前時間","時刻","幾點","報時","標準時間","時間"]
+msgchk_timer = ["現在時間","目前時間","時刻","幾點","報時","標準時間","時間","日期","今天"]
 msgchk_not = ["不知道","我無法","不理解","我不懂","我不能","我无法","我沒","不明白","我不太","不知道","我不是","不清楚","不確定","不提供"]
 msgchk_weather = ["天氣","氣象","下雨"]
 
@@ -86,7 +86,7 @@ def handle_message(event):
     if input_message in msgchk_timer:
         time_tz = pytz.timezone('Asia/Taipei') # <- put your local timezone here
         time_now = datetime.now(time_tz) # the current time in your local timezone
-        time_current = time_now.strftime("%H:%M:%S")
+        time_current = time_now.strftime("%m/%d - %H:%M:%S")
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"現在台灣時間：{time_current}"))
 
     #############################################################
@@ -95,10 +95,7 @@ def handle_message(event):
     elif ("天氣" in input_message) or ("氣象" in input_message) or ("下雨" in input_message) or ("傘" in input_message) :
         # url = '一般天氣預報 - 今明 36 小時天氣預報 JSON 連結'
 
-
-
-        weather_log = ""
-        weather_url = f"https://opendata.cwb.gov.tw/dist/opendata-swagger.html#/%E9%A0%90%E5%A0%B1/get_v1_rest_datastore_F_C0032_001"
+        weather_url = f'https://opendata.cwb.gov.tw/dist/opendata-swagger.html#/%E9%A0%90%E5%A0%B1/get_v1_rest_datastore_F_C0032_001'
         weather_params = {
             "Authorization": "CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F",
             "locationName": "台北市",
@@ -116,7 +113,7 @@ def handle_message(event):
 
             # item
             weather_location = data["records"]["location"][0]["locationName"]
-            #weather_elements = data["records"]["location"][0]["weatherElement"]
+            weather_elements = data["records"]["location"][0]["weatherElement"]
             weather_state = weather_elements[0]["time"][0]["parameter"]["parameterName"]
             weather_rain_prob = weather_elements[1]["time"][0]["parameter"]["parameterName"]
             #min_tem = weather_elements[2]["time"][0]["parameter"]["parameterName"]
@@ -124,8 +121,7 @@ def handle_message(event):
             weather_max_tem = weather_elements[4]["time"][0]["parameter"]["parameterName"]
 
             # print
-            weather_log = weather_location + "未來 8 小時" + weather_state + "，" + weather_comfort + "，最高溫" + weather_max_tem + "度，降雨機率" + weather_rain_prob + "%"
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(weather_location))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_location}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
 
 
     else:
