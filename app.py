@@ -12,6 +12,8 @@ Line Bot機器人串接與測試
 #############################################################
 #載入LineBot所需要的套件
 from flask import Flask, request, abort
+from datetime import datetime
+
 import openai
 from linebot import (
     LineBotApi, WebhookHandler
