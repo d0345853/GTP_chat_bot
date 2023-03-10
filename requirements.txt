@@ -10,3 +10,5 @@ emoji
 pyshorteners
 scipy
 openai
+pytz
+requests

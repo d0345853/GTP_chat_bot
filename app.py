@@ -14,7 +14,7 @@ Line Bot機器人串接與測試
 from flask import Flask, request, abort
 from datetime import datetime, time
 import pytz # $ pip install pytz
-
+import requests
 
 import openai
 from linebot import (
@@ -28,9 +28,9 @@ from linebot.models import *
 app = Flask(__name__)
 
 #############################################################
-msgchk_timer = ["現在時間","目前時間","時刻","幾點","報時","標準時間"]
+msgchk_timer = ["現在時間","目前時間","時刻","幾點","報時","標準時間","時間"]
 msgchk_not = ["不知道","我無法","不理解","我不懂","我不能","我无法","我沒","不明白","我不太","不知道","我不是","不清楚","不確定","不提供"]
-
+msgchk_weather = ["天氣","氣象","下雨"]
 
 #############################################################
 # 必須放上自己的Channel Access Token
@@ -64,7 +64,8 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
 
-    
+    #############################################################
+    #line input
     #message = TextSendMessage(text=event.message.text)  #line input
     input_message = text=event.message.text  #line input
 
@@ -80,20 +81,30 @@ def handle_message(event):
     openai.api_key = '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'
 
     #############################################################
-    # -------------- model 1 -------------- 
+    # -------------- model 1 --------------     
+    # 時間
     if input_message in msgchk_timer:
-        # now = datetime.now()
-        # current_time = now.strftime("%H:%M:%S")
-        # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"現在時間：{current_time}"))
-
         tz = pytz.timezone('Asia/Taipei') # <- put your local timezone here
         now = datetime.now(tz) # the current time in your local timezone
         current_time = now.strftime("%H:%M:%S")
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"現在時間：{current_time}"))
 
+    #############################################################
+    # -------------- model 2 -------------- 
+    # 天氣    
+    elif ("天氣" in input_message) or ("氣象" in input_message) or ("下雨" in input_message) :
+        #url = '一般天氣預報 - 今明 36 小時天氣預報 JSON 連結'
+        url = 'CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F'
+        data = requests.get(url)   # 取得 JSON 檔案的內容為文字
+        data_json = data.json()    # 轉換成 JSON 格式
+        location = data_json['cwbopendata']['dataset']['location']   # 取出 location 的內容
+        for i in location:
+            print(f'{i}')
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(i))
+
     else:
         #############################################################
-        # -------------- model 2 -------------- 
+        # -------------- model 3 -------------- 
         # Add a message from the chatbot to the conversation history
         message_log = []
         message_log.append({'role': 'assistant', 'content': 'Your name is 卡米兔, your are a happy rabbit.'})
@@ -117,8 +128,9 @@ def handle_message(event):
         # reply_msg = response[-1]['content'].strip()
         
         #############################################################
-        # -------------- model 3 -------------- 
-        if reply_msg in msgchk_not:
+        # -------------- model 4 -------------- 
+        # Add a message from the chatbot2 
+        if ("不知道" in reply_msg) or ("我無法" in reply_msg) or ("不理解" in reply_msg) or ("我不懂" in reply_msg) or ("我不能" in reply_msg) or  ("我无法" in reply_msg) or ("我沒" in reply_msg) or ("不明白" in reply_msg) or ("我不太" in reply_msg) or ("不知道" in reply_msg) or ("我不是" in reply_msg) or ("不清楚" in reply_msg)or ("不確定" in reply_msg) or ("不提供" in reply_msg):
             response_2 = openai.Completion.create(
                 engine = "text-davinci-003",    # select model
                 prompt = input_message,     
