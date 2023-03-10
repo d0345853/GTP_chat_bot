@@ -132,7 +132,7 @@ def handle_message(event):
 
             # print
             weather_log = weather_location + "未來 8 小時" + weather_state + "，" + weather_comfort + "，最高溫" + weather_max_tem + "度，降雨機率" + weather_rain_prob + "%"
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(weather_log))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(weather_location))
 
 
     else:
