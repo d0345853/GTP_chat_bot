@@ -12,7 +12,9 @@ Line Bot機器人串接與測試
 #############################################################
 #載入LineBot所需要的套件
 from flask import Flask, request, abort
-from datetime import datetime
+from datetime import datetime, time
+import pytz # $ pip install pytz
+
 
 import openai
 from linebot import (
@@ -26,7 +28,7 @@ from linebot.models import *
 app = Flask(__name__)
 
 #############################################################
-msgchk_timer = ["現在時間","目前時間","時刻","幾點","報時"]
+msgchk_timer = ["現在時間","目前時間","時刻","幾點","報時","標準時間"]
 msgchk_not = ["不知道","我無法","不理解","我不懂","我不能","我无法","我沒","不明白","我不太","不知道","我不是","不清楚","不確定","不提供"]
 
 
@@ -80,7 +82,12 @@ def handle_message(event):
     #############################################################
     # -------------- model 1 -------------- 
     if input_message in msgchk_timer:
-        now = datetime.now()
+        # now = datetime.now()
+        # current_time = now.strftime("%H:%M:%S")
+        # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"現在時間：{current_time}"))
+
+        tz = pytz.timezone('Asia/Taipei') # <- put your local timezone here
+        now = datetime.now(tz) # the current time in your local timezone
         current_time = now.strftime("%H:%M:%S")
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"現在時間：{current_time}"))
 
