@@ -109,7 +109,7 @@ def handle_message(event):
             weather_state = i['weatherElement'][0]['time'][0]['parameter']['parameterName']    # 天氣現象
             #weather_min_tem = i['weatherElement'][1]['time'][0]['parameter']['parameterName']  # 最低溫
             weather_max_tem = i['weatherElement'][2]['time'][0]['parameter']['parameterName']  # 最高溫
-            weather_state = i['weatherElement'][2]['time'][0]['parameter']['parameterName']    # 舒適度
+            weather_comfort = i['weatherElement'][2]['time'][0]['parameter']['parameterName']    # 舒適度
             weather_rain_prob = i['weatherElement'][2]['time'][0]['parameter']['parameterName']   # 降雨機率
             area_list[city] = f'未來 8 小時{wx8}，最高溫 {maxt8} 度，最低溫 {mint8} 度，降雨機率 {pop8} %'  # 組合成回傳的訊息，存在以縣市名稱為 key 的字典檔裡
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_locationname}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
