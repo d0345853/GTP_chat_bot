@@ -95,11 +95,46 @@ def handle_message(event):
     elif ("天氣" in input_message) or ("氣象" in input_message) or ("下雨" in input_message) or ("傘" in input_message) :
         # url = '一般天氣預報 - 今明 36 小時天氣預報 JSON 連結'
         weather_code = 'CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F'
-        weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization={weather_code}&downloadType=WEB&format=JSON'
-        # weather_params = {
-        #     "Authorization": "CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F",
-        #     "locationName": "台北市",
-        # }
+        weather_list = 'F-D0047-061'
+        if ("宜蘭" in input_message) :
+            weather_list = 'F-D0047-001'
+        elif("桃園" in input_message) :
+            weather_list = 'F-D0047-005'
+        elif("新竹" in input_message) :
+            weather_list = 'F-D0047-009'
+        elif("苗栗" in input_message) :
+            weather_list = 'F-D0047-013'
+        elif("彰化" in input_message) :
+            weather_list = 'F-D0047-017'
+        elif("屏東" in input_message) :
+            weather_list = 'F-D0047-033'
+        elif("基隆" in input_message) :
+            weather_list = 'F-D0047-049'
+        elif("高雄" in input_message) :
+            weather_list = 'F-D0047-065'
+        elif("嘉義" in input_message) :
+            weather_list = 'F-D0047-029'
+        elif("金門" in input_message) :
+            weather_list = 'F-D0047-085'
+        elif("新北" in input_message) :
+            weather_list = 'F-D0047-069'
+        elif("新竹" in input_message) :
+            weather_list = 'F-D0047-053'
+        elif("南投" in input_message) :
+            weather_list = 'F-D0047-021'
+        elif("雲林" in input_message) :
+            weather_list = 'F-D0047-025'
+        elif("花蓮" in input_message) :
+            weather_list = 'F-D0047-041'
+        elif("嘉義" in input_message) :
+            weather_list = 'F-D0047-057'
+        elif("臺中" in input_message) :
+            weather_list = 'F-D0047-073'
+        elif("臺南" in input_message) :
+            weather_list = 'F-D0047-077'
+        elif("澎湖" in input_message) :
+            weather_list = 'F-D0047-045'
+        weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{json_api[i]}?Authorization={weather_code}&elementName=WeatherDescription'
         weather_data = requests.get(weather_url)   # 取得主要縣市預報資料
         weather_data_json = weather_data.json()  # json 格式化訊息內容
         weather_location = weather_data_json['cwbopendata']['dataset']['location']  # 取得縣市的預報內容
@@ -109,8 +144,8 @@ def handle_message(event):
             weather_state = i['weatherElement'][0]['time'][0]['parameter']['parameterName']    # 天氣現象
             #weather_min_tem = i['weatherElement'][1]['time'][0]['parameter']['parameterName']  # 最低溫
             weather_max_tem = i['weatherElement'][2]['time'][0]['parameter']['parameterName']  # 最高溫
-            weather_comfort = i['weatherElement'][2]['time'][0]['parameter']['parameterName']    # 舒適度
-            weather_rain_prob = i['weatherElement'][2]['time'][0]['parameter']['parameterName']   # 降雨機率
+            weather_comfort = i['weatherElement'][3]['time'][0]['parameter']['parameterName']    # 舒適度
+            weather_rain_prob = i['weatherElement'][4]['time'][0]['parameter']['parameterName']   # 降雨機率
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_locationname}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
 
         #size=200
