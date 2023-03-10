@@ -95,24 +95,24 @@ def handle_message(event):
     elif ("天氣" in input_message) or ("氣象" in input_message) or ("下雨" in input_message) or ("傘" in input_message) :
         # url = '一般天氣預報 - 今明 36 小時天氣預報 JSON 連結'
         weather_code = 'CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F'
-        weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization={code}&downloadType=WEB&format=JSON'
+        weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization={weather_code}&downloadType=WEB&format=JSON'
         # weather_params = {
         #     "Authorization": "CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F",
         #     "locationName": "台北市",
         # }
-        weather_data = requests.get(url)   # 取得主要縣市預報資料
+        weather_data = requests.get(weather_url)   # 取得主要縣市預報資料
         weather_data_json = weather_data.json()  # json 格式化訊息內容
         weather_location = weather_data_json['cwbopendata']['dataset']['location']  # 取得縣市的預報內容
 
-        for i in location:
-            weather_location = i['locationName']    # 縣市名稱
+        for i in weather_location:
+            weather_locationname = i['locationName']    # 縣市名稱
             weather_state = i['weatherElement'][0]['time'][0]['parameter']['parameterName']    # 天氣現象
             #weather_min_tem = i['weatherElement'][1]['time'][0]['parameter']['parameterName']  # 最低溫
             weather_max_tem = i['weatherElement'][2]['time'][0]['parameter']['parameterName']  # 最高溫
             weather_state = i['weatherElement'][2]['time'][0]['parameter']['parameterName']    # 舒適度
             weather_rain_prob = i['weatherElement'][2]['time'][0]['parameter']['parameterName']   # 降雨機率
             area_list[city] = f'未來 8 小時{wx8}，最高溫 {maxt8} 度，最低溫 {mint8} 度，降雨機率 {pop8} %'  # 組合成回傳的訊息，存在以縣市名稱為 key 的字典檔裡
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_location}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_locationname}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
 
         #size=200
         # #print(response.status_code) 
