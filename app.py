@@ -55,7 +55,7 @@ def handle_message(event):
 
     
     #message = TextSendMessage(text=event.message.text)  #line input
-    message = text=event.message.text  #line input
+    input_message = text=event.message.text  #line input
 
 
     # if "卡米兔安靜" in message:
@@ -67,26 +67,18 @@ def handle_message(event):
     # else:
 
     openai.api_key = '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'
-    # response = openai.Completion.create(
-    #     engine = "text-davinci-003",    # select model
-    #     prompt = message,     
-    #     max_tokens = 512,               # response tokens
-    #     temperature = 1,                # diversity related NLG模型
-    #     top_p = 0.75,                   # diversity related
-    #     n = 1,                          # num of response
-    # )
-    #reply_msg = response["choices"][0]["text"].replace('\n','')
 
 
+    #############################################################
     # Add a message from the chatbot to the conversation history
     message_log = []
     message_log.append({'role': 'assistant', 'content': 'Your name is 卡米兔, your are a happy rabbit.'})
-    message_log.append({'role': 'user', 'content': message})
-    response = openai.ChatCompletion.create(
+    message_log.append({'role': 'user', 'content': input_message})
+    response_1 = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",  # The name of the OpenAI chatbot model to use
         messages=message_log   # The conversation history up to this point, as a list of dictionaries
     )
-    message_log.append({'role': response.choices[0].message.role, 'content': response.choices[0].message.content})
+    message_log.append({'role': response_1.choices[0].message.role, 'content': response_1.choices[0].message.content})
 
     #reply_msg = response.choices[0].message.content.replace('\n','')
     # reply_msg = response.choices[0].message.content
@@ -94,12 +86,26 @@ def handle_message(event):
     #     if "text" in choice:
     #         reply_msg =choice.text
     #         break
+    reply_msg = ""
     reply_msg = format(message_log[-1]['content'].strip())
     # If no response with text is found, return the first response's content (which may be empty)
     # return response.choices[0].message.content
     # reply_msg = response[-1]['content'].strip()
+    
+    #############################################################
+    if ("不知道" in reply_msg) or ("我無法" in reply_msg) or ("不理解" in reply_msg) or ("我不懂" in reply_msg) or ("我不能" in reply_msg) or  ("我无法" in reply_msg) or ("我沒" in reply_msg) or ("不明白" in reply_msg) or ("我不太" in reply_msg) or ("不知道" in reply_msg) or ("我不是" in reply_msg) or ("不清楚" in reply_msg)or ("不確定" in reply_msg) or ("不提供" in reply_msg):
+        response_2 = openai.Completion.create(
+            engine = "text-davinci-003",    # select model
+            prompt = message,     
+            max_tokens = 512,               # response tokens
+            temperature = 1,                # diversity related NLG模型
+            top_p = 0.8,                    # diversity related
+            n = 1,                          # num of response
+        )
+        reply_msg = ""
+        reply_msg = response_2["choices"][0]["text"].replace('\n','')
 
-
+    #############################################################
     text_message = TextSendMessage(text=reply_msg)              # 轉型
     line_bot_api.reply_message(event.reply_token,text_message)  #line output
 
