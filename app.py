@@ -9,10 +9,10 @@ Line Bot聊天機器人
 第一章 Line Bot申請與串接
 Line Bot機器人串接與測試
 """
+#############################################################
 #載入LineBot所需要的套件
 from flask import Flask, request, abort
 import openai
-
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -23,12 +23,19 @@ from linebot.models import *
 
 app = Flask(__name__)
 
+#############################################################
+msgchk_timer = ["現在時間","目前時間","時刻","幾點","報時"]
+msgchk_not = ["不知道","我無法","不理解","我不懂","我不能","我无法","我沒","不明白","我不太","不知道","我不是","不清楚","不確定","不提供"]
+
+
+#############################################################
 # 必須放上自己的Channel Access Token
 line_bot_api = LineBotApi('ZDKxXNN1YeHrqa8+lOlgv9RjOl/2kCVpO5xoDLC3SHfnBBdA9IA3Z/fOQPiHEJhvQ9ImNXMMF/q6Dzl5Rk9UMtpi0a+NJzg+81oARe6dOeaubeXm42HCnNyGJ1j9+oBmOUj+UrZaXLYD3fYc/ybLmgdB04t89/1O/w1cDnyilFU=')
 # 必須放上自己的Channel Secret
 handler = WebhookHandler('91ba25530818a52375c97fbd27aac56c')
 # 更新訊息
 # line_bot_api.push_message('Ub08558de58b09af13f8e03da6a5dfca6', TextSendMessage(text='哈囉哈囉~兔兔來囉!'))
+
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -68,46 +75,56 @@ def handle_message(event):
 
     openai.api_key = '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'
 
-
     #############################################################
-    # Add a message from the chatbot to the conversation history
-    message_log = []
-    message_log.append({'role': 'assistant', 'content': 'Your name is 卡米兔, your are a happy rabbit.'})
-    message_log.append({'role': 'user', 'content': input_message})
-    response_1 = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",  # The name of the OpenAI chatbot model to use
-        messages=message_log   # The conversation history up to this point, as a list of dictionaries
-    )
-    message_log.append({'role': response_1.choices[0].message.role, 'content': response_1.choices[0].message.content})
+    # -------------- model 1 -------------- 
+    if input_message in msgchk_timer:
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        line_bot_api.reply_message(event.source.user_id, TextSendMessage(text=f"現在時間：{current_time}"))
 
-    #reply_msg = response.choices[0].message.content.replace('\n','')
-    # reply_msg = response.choices[0].message.content
-    # for choice in response.choices:
-    #     if "text" in choice:
-    #         reply_msg =choice.text
-    #         break
-    reply_msg = ""
-    reply_msg = format(message_log[-1]['content'].strip())
-    # If no response with text is found, return the first response's content (which may be empty)
-    # return response.choices[0].message.content
-    # reply_msg = response[-1]['content'].strip()
-    
-    #############################################################
-    if ("不知道" in reply_msg) or ("我無法" in reply_msg) or ("不理解" in reply_msg) or ("我不懂" in reply_msg) or ("我不能" in reply_msg) or  ("我无法" in reply_msg) or ("我沒" in reply_msg) or ("不明白" in reply_msg) or ("我不太" in reply_msg) or ("不知道" in reply_msg) or ("我不是" in reply_msg) or ("不清楚" in reply_msg)or ("不確定" in reply_msg) or ("不提供" in reply_msg):
-        response_2 = openai.Completion.create(
-            engine = "text-davinci-003",    # select model
-            prompt = input_message,     
-            max_tokens = 512,               # response tokens
-            temperature = 1,                # diversity related NLG模型
-            top_p = 0.8,                    # diversity related
-            n = 1,                          # num of response
+    else:
+        #############################################################
+        # -------------- model 2 -------------- 
+        # Add a message from the chatbot to the conversation history
+        message_log = []
+        message_log.append({'role': 'assistant', 'content': 'Your name is 卡米兔, your are a happy rabbit.'})
+        message_log.append({'role': 'user', 'content': input_message})
+        response_1 = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # The name of the OpenAI chatbot model to use
+            messages=message_log   # The conversation history up to this point, as a list of dictionaries
         )
-        reply_msg = ""
-        reply_msg = response_2["choices"][0]["text"].replace('\n','')
+        message_log.append({'role': response_1.choices[0].message.role, 'content': response_1.choices[0].message.content})
 
-    #############################################################
-    text_message = TextSendMessage(text=reply_msg)              # 轉型
-    line_bot_api.reply_message(event.reply_token,text_message)  #line output
+        #reply_msg = response.choices[0].message.content.replace('\n','')
+        # reply_msg = response.choices[0].message.content
+        # for choice in response.choices:
+        #     if "text" in choice:
+        #         reply_msg =choice.text
+        #         break
+        reply_msg = ""
+        reply_msg = format(message_log[-1]['content'].strip())
+        # If no response with text is found, return the first response's content (which may be empty)
+        # return response.choices[0].message.content
+        # reply_msg = response[-1]['content'].strip()
+        
+        #############################################################
+        # -------------- model 3 -------------- 
+        if reply_msg in msgchk_not:
+            response_2 = openai.Completion.create(
+                engine = "text-davinci-003",    # select model
+                prompt = input_message,     
+                max_tokens = 512,               # response tokens
+                temperature = 1,                # diversity related NLG模型
+                top_p = 0.8,                    # diversity related
+                n = 1,                          # num of response
+            )
+            reply_msg = ""
+            reply_msg = response_2["choices"][0]["text"].replace('\n','')
+
+        #############################################################
+        # -------------- output -------------- 
+        text_message = TextSendMessage(text=reply_msg)              # 轉型
+        line_bot_api.reply_message(event.reply_token,text_message)  #line output
 
 
 #主程式
