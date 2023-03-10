@@ -87,15 +87,15 @@ def handle_message(event):
         time_tz = pytz.timezone('Asia/Taipei') # <- put your local timezone here
         time_now = datetime.now(time_tz) # the current time in your local timezone
         time_current = time_now.strftime("%H:%M:%S")
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"現在時間：{time_current}"))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"!卡米兔報時!台灣時間：{time_current}"))
 
     #############################################################
     # -------------- model 2 -------------- 
     # 天氣    
-    elif ("天氣" in input_message) or ("氣象" in input_message) or ("下雨" in input_message) :
+    elif ("天氣" in input_message) or ("氣象" in input_message) or ("下雨" in input_message) or ("傘" in input_message) :
         # url = '一般天氣預報 - 今明 36 小時天氣預報 JSON 連結'
         # code 'CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F
-        url = 'https://opendata.cwb.gov.tw/dist/opendata-swagger.html?urls.primaryName=openAPI#/%E9%A0%90%E5%A0%B1/get_v1_rest_datastore_F_C0032_001'
+        url = f'https://opendata.cwb.gov.tw/dist/opendata-swagger.html#/%E9%A0%90%E5%A0%B1/get_v1_rest_datastore_F_C0032_001'
         data = requests.get(url)   # 取得 JSON 檔案的內容為文字
         data_json = data.json()    # 轉換成 JSON 格式
         location = data_json['cwbopendata']['dataset']['location']   # 取出 location 的內容
@@ -105,7 +105,7 @@ def handle_message(event):
 
 
         weather_log = ""
-        weather_url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001"
+        weather_url = "https://opendata.cwb.gov.tw/dataset/forecast/F-C0032-001"
         weather_params = {
             "Authorization": "CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F",
             "locationName": "台北市",
