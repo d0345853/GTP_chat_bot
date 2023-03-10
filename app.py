@@ -128,19 +128,22 @@ def handle_message(event):
             weather_list = 'F-D0047-041'
         elif("嘉義" in input_message) :
             weather_list = 'F-D0047-057'
-        elif("臺中" in input_message) :
+        elif("臺中" in input_message) or ("台中" in input_message) :
             weather_list = 'F-D0047-073'
-        elif("臺南" in input_message) :
+        elif("臺南" in input_message) or ("台南" in input_message):
             weather_list = 'F-D0047-077'
         elif("澎湖" in input_message) :
             weather_list = 'F-D0047-045'
                 
         #url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization={code}&downloadType=WEB&format=JSON'
-        weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list}?Authorization={weather_code}&elementName=WeatherDescription'
+        weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization={weather_code}&downloadType=WEB&format=JSON'
+        #weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list}?Authorization={weather_code}&elementName=WeatherDescription'
+
         weather_data = requests.get(weather_url)   # 取得主要縣市預報資料
         weather_data_json = weather_data.json()  # json 格式化訊息內容
-        weather_location = weather_data_json['records']['locations'][0]['location']   # 取得縣市的預報內容
+        weather_location = weather_data_json['cwbopendata']['dataset']['location']    # 取得縣市的預報內容
 
+        #weather_location = weather_data_json['records']['locations'][0]['location']   # 取得縣市的預報內容
         for i in weather_location:
             weather_locationname = i['locationName']    # 縣市名稱
             weather_state = i['weatherElement'][0]['time'][0]['parameter']['parameterName']    # 天氣現象
@@ -208,7 +211,10 @@ def handle_message(event):
                 n = 1,                          # num of response
             )
             reply_msg = ""
-            reply_msg = response_2["choices"][0]["text"].replace('\n','')
+            if ("//" in reply_msg) or ("[" in reply_msg) or ("{" in reply_msg):
+                reply_msg = "卡米卡米~"
+            else:
+                reply_msg = response_2["choices"][0]["text"].replace('\n','')
 
         #############################################################
         # -------------- output -------------- 
