@@ -178,7 +178,7 @@ def handle_message(event):
         # -------------- model 3 -------------- 
         # Add a message from the chatbot to the conversation history
         message_log = []
-        message_log.append({'role': 'assistant', 'content': 'Your name is 卡米兔, your are a chinese happy rabbit.'})
+        message_log.append({'role': 'assistant', 'content': 'Your name is 卡米兔, your are a happy rabbit.'})
         message_log.append({'role': 'user', 'content': input_message})
         response_1 = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",  # The name of the OpenAI chatbot model to use
