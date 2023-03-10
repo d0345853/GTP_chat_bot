@@ -80,7 +80,7 @@ def handle_message(event):
     if input_message in msgchk_timer:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
-        line_bot_api.reply_message(event.source.user_id, TextSendMessage(text=f"現在時間：{current_time}"))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"現在時間：{current_time}"))
 
     else:
         #############################################################
