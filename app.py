@@ -107,7 +107,7 @@ def handle_message(event):
         weather_code = 'CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F'           # weather API code
         weather_list = 'F-D0047-061'                                        # Web list code (for 8 hour predict)
         weather_output = {}                                                 # for each location
-
+        weather_index = 0                                                   # weather location index (for weather_name)
         # 2.weather url link(JSON Format)
         weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization={weather_code}&downloadType=WEB&format=JSON'
 
@@ -134,14 +134,14 @@ def handle_message(event):
             #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_locationname}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
 
         # 今天資料
-        for i in weather_name:
-            if i in input_message:        # 如果使用者的地址包含縣市名稱
+        for i in weather_locationname:
+            if weather_name[weather_index] in input_message:        # 如果使用者的地址包含縣市名稱
                 reply_msg = weather_output[i]  # 將 msg 換成對應的預報資訊
                 break
             else:
                 reply_msg = weather_output["臺北市"]
                 # 將進一步的預報網址換成對應的預報網址
-
+            weather_index+=1
 
         # 未來資料
         if ("明天" in input_message) or ("後天" in input_message) or ("下星期" in input_message)or ("未來" in input_message):
