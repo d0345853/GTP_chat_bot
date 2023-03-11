@@ -177,12 +177,13 @@ def handle_message(event):
   
         # 2. Setting AI module
         response_3 = openai.Image.create(
-            prompt = input_message,
+            prompt = "a white siamese rabbit",
             n = 1,                                                                                  # one pic
             size = "1024x1024"                                                                      # Size
         )
-        
-        image_url = response_3["data"][0]["url"]                                                    # get image url
+
+
+        image_url = response_3['data'][0]['url']                                                    # get image url
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))
 
         line_bot_api.reply_message(event.reply_token,                                               # line reply image (from link)
