@@ -129,33 +129,32 @@ def handle_message(event):
                 reply_msg = weather_output[i]                                                       # output                              
                 break
             else:
-                reply_msg = weather_output["臺北市"]                                                 # default location
+                reply_msg = weather_output["臺北市"]                                                # default location
         
         # 5-1.parser (1 week data) -----------------------------------------------------------------
         if ("明天" in input_message) or ("後天" in input_message) or ("下星期" in input_message) or ("未來" in input_message):
-            for i in weather_output:                                                                # location list
-                if weather_name[i] in input_message:                                                # if location name is equal to input message
+            for i in weather_output:                                                               # location list
+                if weather_name[i] in input_message:                                               # if location name is equal to input message
                     # 5-2 [RE] getting weather url link(JSON Format)
-                    weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/{weather_list["i"]}?Authorization={weather_code}&downloadType=WEB&format=JSON'
+                    weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list[i]}?Authorization={weather_code}&elementName=WeatherDescription'
                     # 5-3 [RE] getting all weather
                     weather_data = requests.get(weather_url)                                        # get URL
                     weather_data_json = weather_data.json()                                         # trans json format
-                    weather_location = weather_data_json['cwbopendata']['dataset']['location']      # forecast data of major location
-                else:                                                                               # default
-                    weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/{weather_list["臺北市"]}?Authorization={weather_code}&downloadType=WEB&format=JSON'
-                    weather_data = requests.get(weather_url)                                        # get URL
-                    weather_data_json = weather_data.json()                                         # trans json format
-                    weather_location = weather_data_json['cwbopendata']['dataset']['location']      # forecast data of major location
+                    weather_location = weather_data_json['records']['locations'][0]['location']     # forecast data of major location
+                    break
+                else:
+                    # default location
+                    weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list["臺北市"]}?Authorization={weather_code}&elementName=WeatherDescription'
+                    weather_data = requests.get(weather_url)
+                    weather_data_json = weather_data.json()
+                    weather_location = weather_data_json['records']['locations'][0]['location']
             # 5-4 [RE] check input message
             for i in weather_location:
                 weather_locationname = i['locationName']                                            # location (for index)
-                weather_state = i['weatherElement'][0]['time'][0]['parameter']['parameterName']     # weater status
-                weather_min_tem = i['weatherElement'][1]['time'][0]['parameter']['parameterName']   # min temperature
-                weather_max_tem = i['weatherElement'][2]['time'][0]['parameter']['parameterName']   # max temperature
-                weather_comfort = i['weatherElement'][3]['time'][0]['parameter']['parameterName']   # Comfort word
-                weather_rain_prob = i['weatherElement'][4]['time'][0]['parameter']['parameterName'] # chance of rain
-                if weather_name[i] in input_message:                                                # if location name is equal to input message
-                    reply_msg = f"{weather_locationname}未來一周{weather_state}，{weather_comfort}，溫度{weather_min_tem}~{weather_max_tem}度，降雨機率{weather_rain_prob}%"
+                weather_data = i['weatherElement'][0]['time'][1]['elementValue'][0]['value']        # Comprehensive data
+                if weather_name[weather_locationname] in input_message:                                                # if location name is equal to input message
+                    reply_msg = f'{weather_locationname}未來一周{weather_data}'                 # output
+                    break
 
         # 6.Output
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_msg))
