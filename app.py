@@ -162,7 +162,7 @@ def handle_message(event):
             for i in weather_location:
                 weather_locationname = i['locationName']   # 取得縣市名稱
                 weather_data = i['weatherElement'][0]['time'][1]['elementValue'][0]['value']  # 綜合描述
-                if weather_locationname in input_message:    # 如果使用者的地址包含鄉鎮區域名稱
+                if weather_name[i] in input_message:    # 如果使用者的地址包含鄉鎮區域名稱
                     reply_msg = f'{weather_locationname}未來一周天氣:{weather_data}' # 將 msg 換成對應的預報資訊
                     break
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_msg) )  # line output
