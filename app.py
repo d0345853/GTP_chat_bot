@@ -18,6 +18,7 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import *
+from linebot.models.send_messages import ImageSendMessage
 app = Flask(__name__)
 
 #############################################################
@@ -183,12 +184,10 @@ def handle_message(event):
         # 2. Setting AI module
         image_url = response_3["data"][0]["url"]                                                    # get image url
         #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))              # only reply 1 message
-        image_message = ImageSendMessage( 
-            orignial_content_url='https://pbs.twimg.com/media/FcWCyinacAEEQcC.jpg' ,                # original image
-            preview_image_url='https://pbs.twimg.com/media/FcWCyinacAEEQcC.jpg'                     # preview image
-        ) 
-        line_bot_api.reply_message(event.reply_token, image_message)                                # line reply image (from link)
-
+        image_message = ImageSendMessage(
+            original_content_url='https://ithelp.ithome.com.tw/storage/image/ironman13thsidebar.png',
+            preview_image_url='https://ithelp.ithome.com.tw/storage/image/ironman13thsidebar.png'
+        )
     #######################################
     # --------------- Web --------------- #
     elif ("www" in input_message) or ("http" in input_message):
