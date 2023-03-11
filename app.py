@@ -184,10 +184,9 @@ def handle_message(event):
         image_url = response_3["data"][0]["url"]                                                    # get image url
         #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))             # only reply 1 message
 
-        line_bot_api.reply_message(event.reply_token, ImageSendMessage(orignial_content_url=image_url,preview_image_url=image_url))
-                                                                                                    # line reply image (from link)
-                                                                                                    # original image
-                                                                                                    # zip preview image
+        line_bot_api.reply_message(event.reply_token,                                               # line reply image (from link)
+                                   ImageSendMessage(orignial_content_url=image_url,                 # original image
+                                                    preview_image_url="https://pbs.twimg.com/media/FcWCyinacAEEQcC.jpg")) 
     #######################################
     # --------------- Web --------------- #
     elif ("www" in input_message) or ("http" in input_message):
