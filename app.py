@@ -18,7 +18,6 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import *
-from linebot.models import TextSendMessage, ImageSendMessage 
 app = Flask(__name__)
 
 #############################################################
@@ -173,24 +172,21 @@ def handle_message(event):
 
     #######################################
     # --------------- PIC --------------- #
-    elif ("畫一" in input_message) or ("請畫" in input_message)or ("畫出" in input_message)or ("產生" in input_message)or ("繪製" in input_message)or ("一張" in input_message)or ("早安圖" in input_message):
-        # 1. Setting AI module
+    elif ("畫一" in input_message) or ("請畫" in input_message)or ("畫出" in input_message)or ("產生" in input_message)or ("繪製" in input_message)or ("一張" in input_message):
+  
+        # 2. Setting AI module
         response_3 = openai.Image.create(
-            prompt = input_message,                                                                 # remove unnecessary image
+            prompt = input_message,                                                                    # remove unnecessary image
             n = 1,                                                                                  # one pic
             size = "1024x1024",                                                                     # Size
         )
-
-        # 2. Get URL
+        
         image_url = response_3["data"][0]["url"]                                                    # get image url
-        ine_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))             # only reply 1 message
-        # 3. Show image
-        line_bot_api.reply_message(
-            event.reply_token,                                                                      # line reply image (from link)
-            ImageSendMessage(original_content_url=image_url,                                        # original image
-            preview_image_url=image_url)                                                            # zip preview image
-        )
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))             # only reply 1 message
 
+        line_bot_api.reply_message(event.reply_token,                                               # line reply image (from link)
+                                   ImageSendMessage(orignial_content_url=image_url,                 # original image
+                                                    preview_image_url=image_url))                   # zip preview image
     #######################################
     # --------------- Web --------------- #
     elif ("www" in input_message) or ("http" in input_message):
