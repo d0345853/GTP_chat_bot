@@ -22,6 +22,7 @@ app = Flask(__name__)
 
 #############################################################
 msgchk_timer = ["現在時間","目前時間","現在時刻","幾點","報時","標準時間","時間","日期","今天","今天幾號","今天星期幾","星期幾"]
+msgchk_pic = ["畫","圖","繪"]
 msgchk_not = ["不知道","我無法","不理解","我不懂","我不能","我无法","我沒有","不明白","我不太","不了解","我不是","不清楚","不確定","不提供"]
 msgchk_weather = ["天氣","氣象","下雨"]
 msgchk_weather_more = ["明天","後天","未來","下","週","市","村","鄉"]
@@ -109,7 +110,7 @@ def handle_message(event):
 
     #######################################
     # --------------Weather-------------- #
-    elif ("天氣" in input_message) or ("氣象" in input_message) or ("下雨" in input_message) or ("傘" in input_message) or ("風" in input_message) :
+    elif ("天氣" in input_message) or ("氣象" in input_message) or ("下雨" in input_message):
         # 1.weather parameter
         weather_code = 'CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F'                                   # weather API code
         weather_output = {}                                                                         # for each location
@@ -169,6 +170,22 @@ def handle_message(event):
         # 6.Output
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_msg))
 
+    #######################################
+    # --------------- PIC --------------- #
+    elif ("畫" in input_message) or ("圖" in input_message)or ("繪" in input_message):
+        reply_msg = ""  
+        # 2. Setting AI module
+        response_3 = openai.Image.create(
+            prompt = input_message.replace("請","").replace("圖片","").replace("照片","").replace("繪製","") \        
+                .replace("畫出","").replace("一張","").replace("給我","").replace("幫我","").replace("生成","").replace("畫","") \
+                .replace("設計","").replace("產生","").replace("圖","").replace("描繪","").replace("製作",""), #remove unnecessary image
+            n = 1,                                                                                  # one pic
+            size = "1024X1024"                                                                      # Size
+        )
+        image_url = response_3['data'][0]['url']                                                    # get image url
+        line_bot_api.reply_message(event.reply_token,                                               # line reply image (from link)
+                                   ImageSendMessage(orignial_content_url=image_url,                 # original image
+                                                    preview_image_url=image_url))                   # zip preview image
     #######################################
     # --------------- Web --------------- #
     elif ("www" in input_message) or ("http" in input_message):
