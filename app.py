@@ -136,7 +136,7 @@ def handle_message(event):
             for i in weather_output:                                                               # location list
                 if weather_name[i] in input_message:                                               # if location name is equal to input message
                     # 5-2 [RE] getting weather url link(JSON Format)
-                    weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/{weather_list[i]}?Authorization={weather_code}&downloadType=WEB&format=JSON'
+                    weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list[i]}?Authorization={weather_code}&elementName=WeatherDescription'
                     # 5-3 [RE] getting all weather
                     weather_data = requests.get(weather_url)                                        # get URL
                     weather_data_json = weather_data.json()                                         # trans json format
@@ -144,7 +144,7 @@ def handle_message(event):
                     break
                 else:
                     # default location
-                    weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/{weather_list["臺北市"]}?Authorization={weather_code}&downloadType=WEB&format=JSON'
+                    weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list["臺北市"]}?Authorization={weather_code}&elementName=WeatherDescription'
                     weather_data = requests.get(weather_url)
                     weather_data_json = weather_data.json()
                     weather_location = weather_data_json['records']['locations'][0]['location']
