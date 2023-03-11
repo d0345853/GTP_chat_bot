@@ -183,13 +183,14 @@ def handle_message(event):
 
         # 2. Get URL
         image_url = response_3["data"][0]["url"]                                                    # get image url
-        #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))             # only reply 1 message
+        ine_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))             # only reply 1 message
         # 3. Show image
         line_bot_api.reply_message(
             event.reply_token,                                                                      # line reply image (from link)
-            ImageSendMessage(orignial_content_url=image_url,                                        # original image
+            ImageSendMessage(original_content_url=image_url,                                        # original image
             preview_image_url=image_url)                                                            # zip preview image
         )
+
     #######################################
     # --------------- Web --------------- #
     elif ("www" in input_message) or ("http" in input_message):
