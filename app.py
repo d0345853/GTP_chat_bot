@@ -176,15 +176,15 @@ def handle_message(event):
   
         # 1. Setting AI module
         response_3 = openai.Image.create(
-            prompt = input_message,                                                                    # remove unnecessary image
+            prompt = input_message,                                                                 # remove unnecessary image
             n = 1,                                                                                  # one pic
             size = "1024x1024",                                                                     # Size
         )
         # 2. Setting AI module
         image_url = response_3["data"][0]["url"]                                                    # get image url
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))             # only reply 1 message
+        #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))              # only reply 1 message
         image_message = ImageSendMessage( 
-            orignial_content_url='https://pbs.twimg.com/media/FcWCyinacAEEQcC.jpg' ,                                                         # original image
+            orignial_content_url='https://pbs.twimg.com/media/FcWCyinacAEEQcC.jpg' ,                # original image
             preview_image_url='https://pbs.twimg.com/media/FcWCyinacAEEQcC.jpg'                     # preview image
         ) 
         line_bot_api.reply_message(event.reply_token, image_message)                                # line reply image (from link)
