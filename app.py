@@ -31,12 +31,12 @@ weather_list = {"宜蘭縣":"F-D0047-001","桃園市":"F-D0047-005","新竹縣":
     "基隆市":"F-D0047-049","新竹市":"F-D0047-053","嘉義市":"F-D0047-057","臺北市":"F-D0047-061",
     "高雄市":"F-D0047-065","新北市":"F-D0047-069","臺中市":"F-D0047-073","臺南市":"F-D0047-077",
     "連江縣":"F-D0047-081","金門縣":"F-D0047-085"}
-weather_name = {"宜蘭":"F-D0047-001","桃園":"F-D0047-005","新竹":"F-D0047-009","苗栗":"F-D0047-013",
-    "彰化":"F-D0047-017","南投":"F-D0047-021","雲林":"F-D0047-025","嘉義":"F-D0047-029",
-    "屏東":"F-D0047-033","台東":"F-D0047-037","花蓮":"F-D0047-041","澎湖":"F-D0047-045",
-    "基隆":"F-D0047-049","新竹":"F-D0047-053","嘉義":"F-D0047-057","台北":"F-D0047-061",
-    "高雄":"F-D0047-065","新北":"F-D0047-069","台中":"F-D0047-073","台南":"F-D0047-077",
-    "連江":"F-D0047-081","金門":"F-D0047-085"}
+weather_name = {"宜蘭","桃園","新竹","苗栗",
+    "彰化","南投","雲林","嘉義",
+    "屏東","台東","花蓮","澎湖",
+    "基隆","新竹","嘉義","台北",
+    "高雄","新北","台中","台南",
+    "連江","金門"}
 #############################################################
 # 1. Put your Channel Access Token (line bot ID)
 line_bot_api = LineBotApi('ZDKxXNN1YeHrqa8+lOlgv9RjOl/2kCVpO5xoDLC3SHfnBBdA9IA3Z/fOQPiHEJhvQ9ImNXMMF/q6Dzl5Rk9UMtpi0a+NJzg+81oARe6dOeaubeXm42HCnNyGJ1j9+oBmOUj+UrZaXLYD3fYc/ybLmgdB04t89/1O/w1cDnyilFU=')
@@ -129,10 +129,10 @@ def handle_message(event):
 
             weather_output[weather_locationname]=f"{weather_locationname}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%";
 
-            if ("明天" in input_message):
-                line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_locationname}未來 36 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
-            else:
-                line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_locationname}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
+            # if ("明天" in input_message):
+            #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_locationname}未來 36 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
+            # else:
+            #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_locationname}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
 
         # 今天資料
         for i in weather_name:
