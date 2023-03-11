@@ -12,4 +12,4 @@ scipy
 openai
 pytz
 requests
-re
+pymysql
