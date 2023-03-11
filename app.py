@@ -173,11 +173,11 @@ def handle_message(event):
 
     #######################################
     # --------------- PIC --------------- #
-    elif ("畫一" in input_message) or ("請畫" in input_message)or ("畫出" in input_message)or ("產生" in input_message)or ("繪製" in input_message)or ("一張" in input_message):
+    elif ("畫一" in input_message) or ("請畫" in input_message)or ("畫出" in input_message)or ("產生" in input_message)or ("繪製" in input_message)or ("一張" in input_message)or ("早安圖" in input_message):
   
         # 1. Setting AI module
         response_3 = openai.Image.create(
-            prompt = input_message.replace("請","").replace("的圖片","").replace("的照片","").replace("繪製","").replace("畫出","").replace("一張","").replace("給我","").replace("幫我","").replace("生成","").replace("畫","").replace("設計","").replace("產生","").replace("的圖","").replace("描繪","").replace("製作",""),
+            prompt = input_message.replace("請","").replace("繪製","").replace("畫出","").replace("一張","").replace("給我","").replace("幫我","").replace("生成","").replace("畫","").replace("設計","").replace("產生","").replace("描繪","").replace("製作",""),
             n = 1,                                                                                  # one pic
             size = "1024x1024",                                                                     # Size
         )
