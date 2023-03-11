@@ -24,6 +24,7 @@ app = Flask(__name__)
 msgchk_timer = ["現在時間","目前時間","現在時刻","幾點","報時","標準時間","時間","日期","今天","今天幾號","今天星期幾","星期幾"]
 msgchk_not = ["不知道","我無法","不理解","我不懂","我不能","我无法","我沒有","不明白","我不太","不了解","我不是","不清楚","不確定","不提供"]
 msgchk_weather = ["天氣","氣象","下雨"]
+msgchk_weather_more = ["明天","後天","未來","下","週","市","村","鄉"]
 weather_list = {"宜蘭縣":"F-D0047-003","桃園市":"F-D0047-007","新竹縣":"F-D0047-011","苗栗縣":"F-D0047-015",
     "彰化縣":"F-D0047-019","南投縣":"F-D0047-023","雲林縣":"F-D0047-027","嘉義縣":"F-D0047-031",
     "屏東縣":"F-D0047-035","臺東縣":"F-D0047-039","花蓮縣":"F-D0047-043","澎湖縣":"F-D0047-047",
@@ -139,7 +140,7 @@ def handle_message(event):
                 reply_msg = weather_output["臺北市"]                                                # default location
         
         # 5-1.parser (1 week data) -----------------------------------------------------------------
-        if ("明天" in input_message) or ("後天" in input_message) or ("下星期" in input_message) or ("未來" in input_message):
+        if ("明天" in input_message) or ("後天" in input_message) or ("下" in input_message)or ("週" in input_message) or ("未來" in input_message)or ("鄉" in input_message)or ("村" in input_message)or ("鎮" in input_message)or ("市" in input_message):
             for i in weather_output:                                                               # location list
                 if weather_name[i] in input_message:                                               # if location name is equal to input message
                     # 5-2 [RE] getting weather url link(JSON Format)
@@ -159,10 +160,11 @@ def handle_message(event):
             for i in weather_location:
                 weather_locationname = i['locationName']                                            # location (for index)
                 weather_data = i['weatherElement'][0]['time'][1]['elementValue'][0]['value']        # Comprehensive data
-                if weather_locationname in input_message:                                           # if location name is equal to input message
-                    reply_msg=""
+                if weather_locationname in input_message:                                           # small location name is equal to input message
                     reply_msg = f'{weather_locationname}未來一周{weather_data}'                      # output
                     break
+                else:
+                    reply_msg = f'{weather_locationname}未來一周{weather_data}'                      # last value
 
         # 6.Output
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_msg))
