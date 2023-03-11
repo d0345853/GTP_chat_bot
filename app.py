@@ -24,12 +24,12 @@ app = Flask(__name__)
 msgchk_timer = ["現在時間","目前時間","現在時刻","幾點","報時","標準時間","時間","日期","今天","今天幾號","今天星期幾","星期幾"]
 msgchk_not = ["不知道","我無法","不理解","我不懂","我不能","我无法","我沒有","不明白","我不太","不了解","我不是","不清楚","不確定","不提供"]
 msgchk_weather = ["天氣","氣象","下雨"]
-weather_list = {"宜蘭縣":"F-D0047-001","桃園市":"F-D0047-005","新竹縣":"F-D0047-009","苗栗縣":"F-D0047-013",
-    "彰化縣":"F-D0047-017","南投縣":"F-D0047-021","雲林縣":"F-D0047-025","嘉義縣":"F-D0047-029",
-    "屏東縣":"F-D0047-033","臺東縣":"F-D0047-037","花蓮縣":"F-D0047-041","澎湖縣":"F-D0047-045",
-    "基隆市":"F-D0047-049","新竹市":"F-D0047-053","嘉義市":"F-D0047-057","臺北市":"F-D0047-061",
-    "高雄市":"F-D0047-065","新北市":"F-D0047-069","臺中市":"F-D0047-073","臺南市":"F-D0047-077",
-    "連江縣":"F-D0047-081","金門縣":"F-D0047-085"}
+weather_list = {"宜蘭縣":"F-D0047-003","桃園市":"F-D0047-007","新竹縣":"F-D0047-011","苗栗縣":"F-D0047-015",
+    "彰化縣":"F-D0047-019","南投縣":"F-D0047-023","雲林縣":"F-D0047-027","嘉義縣":"F-D0047-031",
+    "屏東縣":"F-D0047-035","臺東縣":"F-D0047-039","花蓮縣":"F-D0047-043","澎湖縣":"F-D0047-047",
+    "基隆市":"F-D0047-051","新竹市":"F-D0047-055","嘉義市":"F-D0047-059","臺北市":"F-D0047-063",
+    "高雄市":"F-D0047-067","新北市":"F-D0047-071","臺中市":"F-D0047-075","臺南市":"F-D0047-079",
+    "連江縣":"F-D0047-083","金門縣":"F-D0047-087"}
 weather_name = {"宜蘭縣":"宜蘭","桃園市":"桃園","新竹縣":"新竹","苗栗縣":"苗栗",
     "彰化縣":"彰化","南投縣":"南投","雲林縣":"雲林","嘉義縣":"嘉義",
     "屏東縣":"屏東","臺東縣":"台東","花蓮縣":"花蓮","澎湖縣":"澎湖",
@@ -136,7 +136,7 @@ def handle_message(event):
             for i in weather_output:                                                               # location list
                 if weather_name[i] in input_message:                                               # if location name is equal to input message
                     # 5-2 [RE] getting weather url link(JSON Format)
-                    weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list[i]}?Authorization={weather_code}&elementName=WeatherDescription'
+                    weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/{weather_list[i]}?Authorization={weather_code}&downloadType=WEB&format=JSON'
                     # 5-3 [RE] getting all weather
                     weather_data = requests.get(weather_url)                                        # get URL
                     weather_data_json = weather_data.json()                                         # trans json format
@@ -144,7 +144,7 @@ def handle_message(event):
                     break
                 else:
                     # default location
-                    weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list["臺北市"]}?Authorization={weather_code}&elementName=WeatherDescription'
+                    weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/{weather_list["臺北市"]}?Authorization={weather_code}&downloadType=WEB&format=JSON'
                     weather_data = requests.get(weather_url)
                     weather_data_json = weather_data.json()
                     weather_location = weather_data_json['records']['locations'][0]['location']
