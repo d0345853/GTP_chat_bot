@@ -21,7 +21,7 @@ from linebot.models import *
 app = Flask(__name__)
 
 #############################################################
-msgchk_timer = ["現在時間","目前時間","時刻","幾點","報時","標準時間","時間","日期","今天","今天幾號","今天星期幾","星期幾"]
+msgchk_timer = ["現在時間","目前時間","現在時刻","幾點","報時","標準時間","時間","日期","今天","今天幾號","今天星期幾","星期幾"]
 msgchk_not = ["不知道","我無法","不理解","我不懂","我不能","我无法","我沒有","不明白","我不太","不了解","我不是","不清楚","不確定","不提供"]
 msgchk_weather = ["天氣","氣象","下雨"]
 weather_list = {"宜蘭縣":"F-D0047-001","桃園市":"F-D0047-005","新竹縣":"F-D0047-009","苗栗縣":"F-D0047-013",
@@ -30,12 +30,12 @@ weather_list = {"宜蘭縣":"F-D0047-001","桃園市":"F-D0047-005","新竹縣":
     "基隆市":"F-D0047-049","新竹市":"F-D0047-053","嘉義市":"F-D0047-057","臺北市":"F-D0047-061",
     "高雄市":"F-D0047-065","新北市":"F-D0047-069","臺中市":"F-D0047-073","臺南市":"F-D0047-077",
     "連江縣":"F-D0047-081","金門縣":"F-D0047-085"}
-weather_name = {0:"宜蘭",1:"桃園",2:"新竹",3:"苗栗",
-    4:"彰化",5:"南投",6:"雲林",7:"嘉義",
-    8:"屏東",9:"台東",10:"花蓮",11:"澎湖",
-    12:"基隆",13:"新竹",14:"嘉義",15:"台北",
-    16:"高雄",17:"新北",18:"台中",19:"台南",
-    20:"連江",21:"金門"}
+weather_name = {"宜蘭縣":"宜蘭","桃園市":"桃園","新竹縣":"新竹","苗栗縣":"苗栗",
+    "彰化縣":"彰化","南投縣":"南投","雲林縣":"雲林","嘉義縣":"嘉義",
+    "屏東縣":"屏東","臺東縣":"台東","花蓮縣":"花蓮","澎湖縣":"澎湖",
+    "基隆市":"基隆","新竹市":"新竹","嘉義市":"嘉義","臺北市":"台北",
+    "高雄市":"高雄","新北市":"新北","臺中市":"台中","臺南市":"台南",
+    "連江縣":"連江","金門縣":"金門"}
 
 #############################################################
 # 1. Put your Channel Access Token (line bot ID)
@@ -107,7 +107,7 @@ def handle_message(event):
         weather_code = 'CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F'           # weather API code
         weather_list = 'F-D0047-061'                                        # Web list code (for 8 hour predict)
         weather_output = {}                                                 # for each location
-        weather_index = 0                                                   # weather location index (for weather_name)
+
         # 2.weather url link(JSON Format)
         weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization={weather_code}&downloadType=WEB&format=JSON'
 
@@ -134,32 +134,36 @@ def handle_message(event):
             #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_locationname}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
 
         # 今天資料
-        for i in weather_locationname:
-            if weather_name[weather_index] in input_message:        # 如果使用者的地址包含縣市名稱
+        for i in weather_output:
+            if weather_name[i] in input_message:        # 如果使用者的地址包含縣市名稱
                 reply_msg = weather_output[i]  # 將 msg 換成對應的預報資訊
                 break
             else:
                 reply_msg = weather_output["臺北市"]
                 # 將進一步的預報網址換成對應的預報網址
-            weather_index+=1
         
         # 未來資料
         if ("明天" in input_message) or ("後天" in input_message) or ("下星期" in input_message) or ("未來" in input_message):
-            weather_index=0     # reset_index
             for i in weather_output:
-                if weather_name[weather_index] in input_message:        # 如果使用者的地址包含縣市名稱
+                if weather_name[i] in input_message:        # 如果使用者的地址包含縣市名稱
                     # 將進一步的預報網址換成對應的預報網址
                     weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list[i]}?Authorization={weather_code}&elementName=WeatherDescription'
                     weather_data = requests.get(weather_url)  # 取得主要縣市裡各個區域鄉鎮的氣象預報
                     weather_data_json = weather_data.json() # json 格式化訊息內容
                     weather_location = weather_data_json['records']['locations'][0]['location']    # 取得預報內容
                     break
-                weather_index+=1
-            for i in weather_name:
+                else:
+                    # 將進一步的預報網址換成對應的預報網址
+                    weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list["臺北市"]}?Authorization={weather_code}&elementName=WeatherDescription'
+                    weather_data = requests.get(weather_url)  # 取得主要縣市裡各個區域鄉鎮的氣象預報
+                    weather_data_json = weather_data.json() # json 格式化訊息內容
+                    weather_location = weather_data_json['records']['locations'][0]['location']    # 取得預報內容
+
+            for i in weather_location:
                 weather_locationname = i['locationName']   # 取得縣市名稱
                 weather_data = i['weatherElement'][0]['time'][1]['elementValue'][0]['value']  # 綜合描述
                 if weather_locationname in input_message:    # 如果使用者的地址包含鄉鎮區域名稱
-                    reply_msg = f'未來一周天氣{weather_data}' # 將 msg 換成對應的預報資訊
+                    reply_msg = f'{weather_locationname}未來一周天氣:{weather_data}' # 將 msg 換成對應的預報資訊
                     break
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_msg) )  # line output
 
