@@ -173,7 +173,7 @@ def handle_message(event):
 
     #######################################
     # --------------- PIC --------------- #
-    elif ("畫一" in input_message) or ("請畫" in input_message)or ("畫出" in input_message)or ("產生" in input_message)or ("繪製" in input_message)or ("一張" in input_message)or ("早安圖" in input_message):
+    elif ("畫一" in input_message) or ("請畫" in input_message)or ("畫出" in input_message)or ("產生" in input_message)or ("繪製" in input_message)or ("一張" in input_message)or ("早安圖" in input_message)or ("Draw" in input_message):
   
         # 1. Setting AI module
         response_3 = openai.Image.create(
