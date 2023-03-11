@@ -155,6 +155,9 @@ def handle_message(event):
                 if weather_name[i] in input_message:                                                # if location name is equal to input message
                     reply_msg = f'{weather_locationname}未來一周天氣:{weather_data}'                 # output
 
+        # 6.Output
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_msg))
+
     #######################################
     # --------------- Web --------------- #
     elif ("www" in input_message) or ("http" in input_message):
