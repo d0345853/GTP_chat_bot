@@ -159,8 +159,9 @@ def handle_message(event):
             for i in weather_location:
                 weather_locationname = i['locationName']                                            # location (for index)
                 weather_data = i['weatherElement'][0]['time'][1]['elementValue'][0]['value']        # Comprehensive data
-                if weather_locationname in input_message:                                                # if location name is equal to input message
-                    reply_msg = f'{weather_locationname}未來一周{weather_data}'                 # output
+                if weather_locationname in input_message:                                           # if location name is equal to input message
+                    reply_msg=""
+                    reply_msg = f'{weather_locationname}未來一周{weather_data}'                      # output
                     break
 
         # 6.Output
