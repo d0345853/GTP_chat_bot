@@ -105,12 +105,11 @@ def handle_message(event):
 
         # 1.weather parameter
         weather_code = 'CWB-86BE978B-666E-4AE1-87B6-C70A998DDD5F'           # weather API code
-        weather_list = 'F-D0047-061'                                        # Taipei location code (Original)
+        weather_list = 'F-D0047-061'                                        # Web list code (for 8 hour predict)
         weather_output = {}                                                 # for each location
 
         # 2.weather url link(JSON Format)
         weather_url = f'https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization={weather_code}&downloadType=WEB&format=JSON'
-        # weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list}?Authorization={weather_code}&elementName=WeatherDescription'
 
         # if ("明天" in input_message):
         #     weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list}?Authorization={weather_code}&elementName=WeatherDescription'
@@ -135,23 +134,20 @@ def handle_message(event):
             #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_locationname}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
 
         # 今天資料
-        for i in weather_output:
+        for i in weather_name:
             if i in input_message:        # 如果使用者的地址包含縣市名稱
                 reply_msg = weather_output[i]  # 將 msg 換成對應的預報資訊
                 break
-
+            else:
+                reply_msg = weather_output["臺北市"]
                 # 將進一步的預報網址換成對應的預報網址
-                if ("明天" in input_message) or ("後天" in input_message) or ("下星期" in input_message)or ("未來" in input_message):
-                    weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list[i]}?Authorization={weather_code}&elementName=WeatherDescription'
-                    weather_data = requests.get(weather_url)  # 取得主要縣市裡各個區域鄉鎮的氣象預報
-                    weather_data_json = weather_data.json() # json 格式化訊息內容
-                    weather_location = weather_data_json['records']['locations'][0]['location']    # 取得預報內容
 
 
         # 未來資料
         if ("明天" in input_message) or ("後天" in input_message) or ("下星期" in input_message)or ("未來" in input_message):
             for i in weather_output:
                 if i in reply_msg:        # 如果使用者的地址包含縣市名稱
+                    # 將進一步的預報網址換成對應的預報網址
                     weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list[i]}?Authorization={weather_code}&elementName=WeatherDescription'
                     weather_data = requests.get(weather_url)  # 取得主要縣市裡各個區域鄉鎮的氣象預報
                     weather_data_json = weather_data.json() # json 格式化訊息內容
