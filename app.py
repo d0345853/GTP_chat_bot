@@ -188,6 +188,7 @@ def handle_message(event):
             original_content_url='https://ithelp.ithome.com.tw/storage/image/ironman13thsidebar.png',
             preview_image_url='https://ithelp.ithome.com.tw/storage/image/ironman13thsidebar.png'
         )
+        line_bot_api.reply_message(event.reply_token, image_message)
     #######################################
     # --------------- Web --------------- #
     elif ("www" in input_message) or ("http" in input_message):
