@@ -177,15 +177,17 @@ def handle_message(event):
   
         # 1. Setting AI module
         response_3 = openai.Image.create(
-            prompt = input_message,                                                                 # remove unnecessary image
+            prompt = input_message.replace("請","").replace("的圖片","").replace("的照片","").replace("繪製","").replace("畫出","").replace("一張","").replace("給我","").replace("幫我","").replace("生成","").replace("畫","").replace("設計","").replace("產生","").replace("的圖","").replace("描繪","").replace("製作",""),
             n = 1,                                                                                  # one pic
             size = "1024x1024",                                                                     # Size
         )
         # 2. Setting AI module
         image_url = response_3["data"][0]["url"]                                                    # get image url
-        #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))              # only reply 1 message
+        #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))             # only reply 1 message
+
+        # 3.show image
         image_message = ImageSendMessage(
-            original_content_url=image_url,                                                               # original image
+            original_content_url=image_url,                                                         # original image
             preview_image_url='https://pbs.twimg.com/media/FcWCyinacAEEQcC.jpg'                     # preview image
         )
         line_bot_api.reply_message(event.reply_token, image_message)                                # line reply image (from link)
