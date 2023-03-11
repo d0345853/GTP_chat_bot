@@ -30,12 +30,12 @@ weather_list = {"宜蘭縣":"F-D0047-001","桃園市":"F-D0047-005","新竹縣":
     "基隆市":"F-D0047-049","新竹市":"F-D0047-053","嘉義市":"F-D0047-057","臺北市":"F-D0047-061",
     "高雄市":"F-D0047-065","新北市":"F-D0047-069","臺中市":"F-D0047-073","臺南市":"F-D0047-077",
     "連江縣":"F-D0047-081","金門縣":"F-D0047-085"}
-weather_name = ["宜蘭","桃園","新竹","苗栗",
-    "彰化","南投","雲林","嘉義",
-    "屏東","台東","花蓮","澎湖",
-    "基隆","新竹","嘉義","台北",
-    "高雄","新北","台中","台南",
-    "連江","金門"]
+weather_name = {0:"宜蘭",1:"桃園",2:"新竹",3:"苗栗",
+    4:"彰化",5:"南投",6:"雲林",7:"嘉義",
+    8:"屏東",9:"台東",10:"花蓮",11:"澎湖",
+    12:"基隆",13:"新竹",14:"嘉義",15:"台北",
+    16:"高雄",17:"新北",18:"台中",19:"台南",
+    20:"連江",21:"金門"}
 
 #############################################################
 # 1. Put your Channel Access Token (line bot ID)
@@ -84,7 +84,7 @@ def handle_message(event):
     
     #######################################
     # --------------Mantra--------------- #
-    if ("卡米" in input_message):
+    if ("卡米" == input_message):
         reply_msg = f"逗你歡樂 陪你說笑"
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_msg))
 
@@ -126,7 +126,7 @@ def handle_message(event):
             weather_comfort = i['weatherElement'][3]['time'][0]['parameter']['parameterName']    # 舒適度
             weather_rain_prob = i['weatherElement'][4]['time'][0]['parameter']['parameterName']   # 降雨機率
 
-            weather_output[weather_locationname]=f"{weather_locationname}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%";
+            weather_output[weather_locationname]=f"{weather_locationname}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"
 
             # if ("明天" in input_message):
             #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_locationname}未來 36 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
@@ -142,16 +142,19 @@ def handle_message(event):
                 reply_msg = weather_output["臺北市"]
                 # 將進一步的預報網址換成對應的預報網址
             weather_index+=1
-
+        
         # 未來資料
-        if ("明天" in input_message) or ("後天" in input_message) or ("下星期" in input_message)or ("未來" in input_message):
+        if ("明天" in input_message) or ("後天" in input_message) or ("下星期" in input_message) or ("未來" in input_message):
+            weather_index=0     # reset_index
             for i in weather_output:
-                if i in reply_msg:        # 如果使用者的地址包含縣市名稱
+                if weather_name[weather_index] in input_message:        # 如果使用者的地址包含縣市名稱
                     # 將進一步的預報網址換成對應的預報網址
                     weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list[i]}?Authorization={weather_code}&elementName=WeatherDescription'
                     weather_data = requests.get(weather_url)  # 取得主要縣市裡各個區域鄉鎮的氣象預報
                     weather_data_json = weather_data.json() # json 格式化訊息內容
                     weather_location = weather_data_json['records']['locations'][0]['location']    # 取得預報內容
+                    break
+                weather_index+=1
             for i in weather_name:
                 weather_locationname = i['locationName']   # 取得縣市名稱
                 weather_data = i['weatherElement'][0]['time'][1]['elementValue'][0]['value']  # 綜合描述
@@ -160,25 +163,6 @@ def handle_message(event):
                     break
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_msg) )  # line output
 
-        #size=200
-        # #print(response.status_code) 
- 
-        # if weather_response.status_code == 200:
-
-        #     data = json.loads(weather_response.text)
-
-        #     # item
-        #     weather_location = data["records"]["location"][0]["locationName"]
-        #     weather_elements = data["records"]["location"][0]["weatherElement"]
-        #     weather_state = weather_elements[0]["time"][0]["parameter"]["parameterName"]
-        #     weather_rain_prob = weather_elements[1]["time"][0]["parameter"]["parameterName"]
-        #     #min_tem = weather_elements[2]["time"][0]["parameter"]["parameterName"]
-        #     weather_comfort = weather_elements[3]["time"][0]["parameter"]["parameterName"]
-        #     weather_max_tem = weather_elements[4]["time"][0]["parameter"]["parameterName"]
-
-        #     # print
-        #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_location}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
- 
     #######################################
     # --------------- Web --------------- #
     elif ("www" in input_message) or ("http" in input_message):
