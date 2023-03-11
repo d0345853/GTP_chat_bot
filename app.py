@@ -172,7 +172,7 @@ def handle_message(event):
 
     #######################################
     # --------------- PIC --------------- #
-    elif ("畫" in input_message) or ("圖" in input_message)or ("繪" in input_message):
+    elif ("畫一" in input_message) or ("請畫" in input_message)or ("畫出" in input_message)or ("產生" in input_message)or ("繪製" in input_message)or ("一張" in input_message):
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text="兔兔努力畫圖中"))
   
         # 2. Setting AI module
