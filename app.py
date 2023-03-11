@@ -174,17 +174,17 @@ def handle_message(event):
     # --------------- PIC --------------- #
     elif ("畫一" in input_message) or ("請畫" in input_message)or ("畫出" in input_message)or ("產生" in input_message)or ("繪製" in input_message)or ("一張" in input_message):
   
-        # 2. Setting AI module
+        # 1. Setting AI module
         response_3 = openai.Image.create(
             prompt = input_message,                                                                    # remove unnecessary image
             n = 1,                                                                                  # one pic
             size = "1024x1024",                                                                     # Size
         )
-        
+        # 2. Setting AI module
         image_url = response_3["data"][0]["url"]                                                    # get image url
-        #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))             # only reply 1 message
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=image_url))             # only reply 1 message
         image_message = ImageSendMessage( 
-            orignial_content_url=image_url,                                                         # original image
+            orignial_content_url='https://pbs.twimg.com/media/FcWCyinacAEEQcC.jpg' ,                                                         # original image
             preview_image_url='https://pbs.twimg.com/media/FcWCyinacAEEQcC.jpg'                     # preview image
         ) 
         line_bot_api.reply_message(event.reply_token, image_message)                                # line reply image (from link)
