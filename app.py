@@ -24,19 +24,19 @@ app = Flask(__name__)
 msgchk_timer = ["現在時間","目前時間","時刻","幾點","報時","標準時間","時間","日期","今天","今天幾號","今天星期幾","星期幾"]
 msgchk_not = ["不知道","我無法","不理解","我不懂","我不能","我无法","我沒有","不明白","我不太","不了解","我不是","不清楚","不確定","不提供"]
 msgchk_weather = ["天氣","氣象","下雨"]
-
 weather_list = {"宜蘭縣":"F-D0047-001","桃園市":"F-D0047-005","新竹縣":"F-D0047-009","苗栗縣":"F-D0047-013",
     "彰化縣":"F-D0047-017","南投縣":"F-D0047-021","雲林縣":"F-D0047-025","嘉義縣":"F-D0047-029",
     "屏東縣":"F-D0047-033","臺東縣":"F-D0047-037","花蓮縣":"F-D0047-041","澎湖縣":"F-D0047-045",
     "基隆市":"F-D0047-049","新竹市":"F-D0047-053","嘉義市":"F-D0047-057","臺北市":"F-D0047-061",
     "高雄市":"F-D0047-065","新北市":"F-D0047-069","臺中市":"F-D0047-073","臺南市":"F-D0047-077",
     "連江縣":"F-D0047-081","金門縣":"F-D0047-085"}
-weather_name = {"宜蘭","桃園","新竹","苗栗",
+weather_name = ["宜蘭","桃園","新竹","苗栗",
     "彰化","南投","雲林","嘉義",
     "屏東","台東","花蓮","澎湖",
     "基隆","新竹","嘉義","台北",
     "高雄","新北","台中","台南",
-    "連江","金門"}
+    "連江","金門"]
+
 #############################################################
 # 1. Put your Channel Access Token (line bot ID)
 line_bot_api = LineBotApi('ZDKxXNN1YeHrqa8+lOlgv9RjOl/2kCVpO5xoDLC3SHfnBBdA9IA3Z/fOQPiHEJhvQ9ImNXMMF/q6Dzl5Rk9UMtpi0a+NJzg+81oARe6dOeaubeXm42HCnNyGJ1j9+oBmOUj+UrZaXLYD3fYc/ybLmgdB04t89/1O/w1cDnyilFU=')
@@ -135,7 +135,7 @@ def handle_message(event):
             #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"{weather_locationname}未來 8 小時{weather_state}，{weather_comfort}，最高溫{weather_max_tem}度，降雨機率{weather_rain_prob}%"))
 
         # 今天資料
-        for i in weather_name:
+        for i in weather_output:
             if i in input_message:        # 如果使用者的地址包含縣市名稱
                 reply_msg = weather_output[i]  # 將 msg 換成對應的預報資訊
                 break
@@ -150,7 +150,7 @@ def handle_message(event):
 
         # 未來資料
         if ("明天" in input_message) or ("後天" in input_message) or ("下星期" in input_message)or ("未來" in input_message):
-            for i in weather_name:
+            for i in weather_output:
                 if i in reply_msg:        # 如果使用者的地址包含縣市名稱
                     weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list[i]}?Authorization={weather_code}&elementName=WeatherDescription'
                     weather_data = requests.get(weather_url)  # 取得主要縣市裡各個區域鄉鎮的氣象預報
