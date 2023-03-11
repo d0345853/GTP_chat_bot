@@ -58,8 +58,15 @@ def callback():
     except InvalidSignatureError:
         abort(400)
     return 'OK'
-
-
+#############################################################
+db_setting ={
+    "host": "127.0.0.1",
+    "port": 3306,
+    "user": "root",
+    "password": "jordan",
+    "db":"jordan_db",
+    "charset": "utf8"
+}
 #############################################################
 #####                  Main function                    #####
 @handler.add(MessageEvent, message=TextMessage)
@@ -152,7 +159,7 @@ def handle_message(event):
             for i in weather_location:
                 weather_locationname = i['locationName']                                            # location (for index)
                 weather_data = i['weatherElement'][0]['time'][1]['elementValue'][0]['value']        # Comprehensive data
-                if weather_name[weather_locationname] in input_message:                                                # if location name is equal to input message
+                if weather_locationname in input_message:                                                # if location name is equal to input message
                     reply_msg = f'{weather_locationname}未來一周{weather_data}'                 # output
                     break
 
