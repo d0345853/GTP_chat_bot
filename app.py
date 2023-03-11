@@ -10,7 +10,7 @@ from datetime import datetime, time     # Loading timer
 import pytz                             # Loading timer
 import requests                         # Loading LineBot library
 import openai                           # Loading open AI library
-
+import re                               # replace
 from linebot import (                   # Loading LineBot API
     LineBotApi, WebhookHandler
 )
