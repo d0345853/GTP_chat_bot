@@ -195,6 +195,8 @@ def handle_message(event):
     # --------------- Web --------------- #
     elif ("www" in input_message) or ("http" in input_message):
         reply_msg = ""                                                                              # don't reply message
+    elif ("他" == input_message[0]):
+        reply_msg = ""                                                                              # don't reply message
 
     else:
         #######################################
