@@ -173,11 +173,11 @@ def handle_message(event):
 
     #######################################
     # --------------- PIC --------------- #
-    elif ("畫一" in input_message) or ("請畫" in input_message)or ("畫出" in input_message)or ("產生" in input_message)or ("繪製" in input_message)or ("一張" in input_message)or ("早安圖" in input_message)or ("Draw" in input_message):
+    elif ("畫一張" in input_message) or ("請畫" in input_message)or ("畫出" in input_message)or ("產生" in input_message)or ("繪製" in input_message)or ("一張" in input_message)or ("早安圖" in input_message)or ("Draw" in input_message):
   
         # 1. Setting AI module
         response_3 = openai.Image.create(
-            prompt = input_message.replace("請","").replace("繪製","").replace("畫出","").replace("一張","").replace("給我","").replace("幫我","").replace("生成","").replace("畫","").replace("設計","").replace("產生","").replace("描繪","").replace("製作",""),
+            prompt = input_message.replace("請","").replace("畫一張","").replace("繪製","").replace("畫出","").replace("給我","").replace("幫我","").replace("生成","").replace("設計","").replace("產生","").replace("描繪","").replace("製作",""),
             n = 1,                                                                                  # one pic
             size = "1024x1024",                                                                     # Size
         )
@@ -218,7 +218,7 @@ def handle_message(event):
         #######################################
         # ----------- AI anwser 2------------ #
         #     1. Add a message from the chatbot2  (to reduce negative answer)#
-        if ("不知道" in reply_msg) or ("我無法" in reply_msg) or ("不理解" in reply_msg) or ("我不懂" in reply_msg) or ("我不能" in reply_msg) or  ("我无法" in reply_msg) or ("我沒有" in reply_msg) or ("不明白" in reply_msg) or ("我不太" in reply_msg) or ("不了解" in reply_msg) or ("我不是" in reply_msg) or ("不清楚" in reply_msg)or ("不確定" in reply_msg) or ("不提供" in reply_msg):
+        if ("不知道" in reply_msg) or ("我無法" in reply_msg) or ("不理解" in reply_msg) or ("我不懂" in reply_msg) or ("我不能" in reply_msg) or  ("我无法" in reply_msg) or ("我沒有" in reply_msg) or ("不明白" in reply_msg) or ("我不太" in reply_msg) or ("不了解" in reply_msg) or ("我不是" in reply_msg) or ("不清楚" in reply_msg)or ("不確定" in reply_msg) or ("不提供" in reply_msg) or ("sorry" in reply_msg):
            
             # 2. Setting AI module
             response_2 = openai.Completion.create(
