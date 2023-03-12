@@ -254,21 +254,23 @@ def handle_message(event):
     #######################################
     # ----------- Voice to txt----------- #
     try:
-        if(enent.meaasge.type == "audio"):
+        # 1.get line audio input
+        if(event.message.type == "audio"):
             audio_content = line_bot_api.get_message_content(event.message.id)
-            path='./temp.mp3'                                       # temp
-            with open(path,'wb') as audio_fd:
+            path='./temp.mp3'                                       # temp file
+            # 2. save audio file
+            with open(path,'wb') as audio_fd:                       # read audio
                 for audio_part in audio_content.iter_content():
-                    audio_fd.write(audio_part)
-            with open("temp.mp3","rd") as audio_file:       #loading audio file to openAI trans
-                model_id = 'whisper-1'                      #only this model
+                    audio_fd.write(audio_part)                      # save in mp3 file
+            # 3. Voice to txt
+            with open("temp.mp3","rb") as audio_file:               # loading audio file to openAI trans                      
                 response_4 = openai.Audio.transcribe(
-                    model=model_id,  #
-                    file=audio_file,    # response_format ='text' (Format: json, srt, vtt)
+                    model='whisper-1',                              # only this model
+                    file=audio_file,                                # response_format ='text' (Format: json, srt, vtt)
                 )
                 # 4. Output to line text
-                reply_msg = response_4['text']
-                text_message = TextSendMessage(text=reply_msg)              # string to TextSendMessage
+                reply_msg = response_4['text']                      # get output
+                text_message = TextSendMessage(text=reply_msg)      # string to TextSendMessage
                 line_bot_api.reply_message(event.reply_token,text_message)
     except openai.error.OpenAIError as e:
         print(e.http_status)
