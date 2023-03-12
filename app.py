@@ -19,6 +19,7 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 from linebot.models.send_messages import ImageSendMessage
+from linebot.models import AudioMessage
 app = Flask(__name__)
 
 #############################################################
@@ -77,7 +78,7 @@ db_setting ={
 }
 #############################################################
 #####                  Main function                    #####
-@handler.add(MessageEvent, message=TextMessage)
+@handler.add(MessageEvent, message=TextMessage)                  # new event(line bot interative)
 def handle_message(event):
 
     #######################################
@@ -209,7 +210,7 @@ def handle_message(event):
         # 1. message buffer
         message_log = []                                            # Add a intput message from the chatbot to the conversation history
         # 2. Put AI model rose to "AI form"
-        message_log.append({'role': 'assistant', 'content': 'Your name is 卡米兔, your are a happy rabbit.'})   
+        message_log.append({'role': 'assistant', 'content': 'My name is 卡米兔, I am a happy rabbit.'})   
         # 3. Put input message to "user form" 
         message_log.append({'role': 'user', 'content': input_message})
         # 4. Setting AI module
@@ -246,10 +247,33 @@ def handle_message(event):
             else:
                 reply_msg = response_2["choices"][0]["text"].replace('\n','')   # output AI anwser
 
-        #######################################
-        # -------------- output ------------- #  
+        # 5. Output to line text
         text_message = TextSendMessage(text=reply_msg)              # string to TextSendMessage
         line_bot_api.reply_message(event.reply_token,text_message)  # line output
+
+    #######################################
+    # ----------- Voice to txt----------- #
+    try:
+        if(enent.meaasge.tyoe == "audio"):
+            audio_content = line_bot_api.get_message_content(event.message.id)
+            path='./temp.mp3'                                       # temp
+            with open(path,'wb') as audio_fd:
+                for audio_part in audio_content.iter_content():
+                    audio_fd.write(audio_part)
+            with open("temp.mp3","rd") as audio_file:       #loading audio file to openAI trans
+                model_id = 'whisper-1'
+            # 
+            response_4 = openai.Audio.transcribe(
+                model=model_id,  #
+                file=audio_file,    # response_format ='text' (Format: json, srt, vtt)
+            )
+            # 4. Output to line text
+            reply_msg = response_4['text']
+            text_message = TextSendMessage(text=reply_msg)              # string to TextSendMessage
+            line_bot_api.reply_message(event.reply_token,text_message)
+    except openai.error.OpenAIError as e:
+        print(e.http_status)
+        print(e.error)
 
 
 
