@@ -22,10 +22,14 @@ from linebot.models.send_messages import ImageSendMessage
 app = Flask(__name__)
 
 #############################################################
+flag_silence = 0                        # Linebot silence mode (0=timer_clsse, 1=always_talk, 2=silence)
+flag_marv = 0                           # Linebot rude mode
+
 msgchk_timer = ["現在時間","目前時間","現在時刻","幾點","報時","標準時間","時間","日期","今天","今天幾號","今天星期幾","星期幾"]
 msgchk_pic = ["畫","圖","繪"]
 msgchk_not = ["不知道","我無法","不理解","我不懂","我不能","我无法","我沒有","不明白","我不太","不了解","我不是","不清楚","不確定","不提供"]
 msgchk_weather = ["天氣","氣象","下雨"]
+msgchk_marv = ["不爽","生氣","沒禮貌","不開心","怎樣","到底","靠","幹","操","馬的"]
 msgchk_weather_more = ["明天","後天","未來","下","週","市","村","鄉"]
 weather_list = {"宜蘭縣":"F-D0047-003","桃園市":"F-D0047-007","新竹縣":"F-D0047-011","苗栗縣":"F-D0047-015",
     "彰化縣":"F-D0047-019","南投縣":"F-D0047-023","雲林縣":"F-D0047-027","嘉義縣":"F-D0047-031",
@@ -39,6 +43,7 @@ weather_name = {"宜蘭縣":"宜蘭","桃園市":"桃園","新竹縣":"新竹","
     "基隆市":"基隆","新竹市":"新竹","嘉義市":"嘉義","臺北市":"台北",
     "高雄市":"高雄","新北市":"新北","臺中市":"台中","臺南市":"台南",
     "連江縣":"連江","金門縣":"金門"}
+
 
 #############################################################
 # 1. Put your Channel Access Token (line bot ID)
@@ -139,12 +144,12 @@ def handle_message(event):
                 reply_msg = weather_output[i]                                                       # output                              
                 break
             else:
-                reply_msg = weather_output["臺北市"]                                                # default location
+                reply_msg = weather_output["臺北市"]                                                 # default location
         
         # 5-1.parser (1 week data) -----------------------------------------------------------------
         if ("明天" in input_message) or ("後天" in input_message) or ("下" in input_message)or ("週" in input_message) or ("未來" in input_message)or ("鄉" in input_message)or ("村" in input_message)or ("鎮" in input_message)or ("市" in input_message):
-            for i in weather_output:                                                               # location list
-                if weather_name[i] in input_message:                                               # if location name is equal to input message
+            for i in weather_output:                                                                # location list
+                if weather_name[i] in input_message:                                                # if location name is equal to input message
                     # 5-2 [RE] getting weather url link(JSON Format)
                     weather_url = f'https://opendata.cwb.gov.tw/api/v1/rest/datastore/{weather_list[i]}?Authorization={weather_code}&elementName=WeatherDescription'
                     # 5-3 [RE] getting all weather
@@ -173,7 +178,7 @@ def handle_message(event):
 
     #######################################
     # --------------- PIC --------------- #
-    elif ("畫" == input_message[0]) or ("請畫" in input_message)or("產生" in input_message)or ("繪製" in input_message)or ("一張" in input_message)or ("早安圖" in input_message)or ("Draw" in input_message):
+    elif ("畫" == input_message[0]) or ("請畫" in input_message)or ("產生" in input_message)or ("繪製" in input_message)or ("一張" in input_message)or ("早安圖" in input_message)or ("Draw" in input_message):
   
         # 1. Setting AI module
         response_3 = openai.Image.create(
@@ -187,15 +192,15 @@ def handle_message(event):
 
         # 3.show image
         image_message = ImageSendMessage(
+            model = 'image-alpha-001'                                                               # which is the model ID for DALL·E 2.
             original_content_url=image_url,                                                         # original image
             preview_image_url='https://pbs.twimg.com/media/FcWCyinacAEEQcC.jpg'                     # preview image
         )
         line_bot_api.reply_message(event.reply_token, image_message)                                # line reply image (from link)
+
     #######################################
     # --------------- Web --------------- #
-    elif ("www" in input_message) or ("http" in input_message):
-        reply_msg = ""                                                                              # don't reply message
-    elif ("他" == input_message[0]):
+    elif ("www" in input_message) or ("http" in input_message) or ("他" == input_message[0]):
         reply_msg = ""                                                                              # don't reply message
 
     else:
