@@ -177,7 +177,7 @@ def handle_message(event):
   
         # 1. Setting AI module
         response_3 = openai.Image.create(
-            prompt = input_message.replace("請","").replace("畫一張","").replace("繪製","").replace("畫出","").replace("給我","").replace("幫我","").replace("生成","").replace("設計","").replace("產生","").replace("描繪","").replace("製作",""),
+            prompt = input_message.replace("請你","").replace("請","").replace("畫一張","").replace("繪製","").replace("畫出","").replace("給我","").replace("幫我","").replace("生成","").replace("設計","").replace("卡米兔","").replace("產生","").replace("描繪","").replace("製作",""),
             n = 1,                                                                                  # one pic
             size = "1024x1024",                                                                     # Size
         )
