@@ -192,7 +192,7 @@ def handle_message(event):
 
         # 3.show image
         image_message = ImageSendMessage(
-            model = 'image-alpha-001'                                                               # which is the model ID for DALL·E 2.
+            model = 'image-alpha-001',                                                              # which is the model ID for DALL·E 2.
             original_content_url=image_url,                                                         # original image
             preview_image_url='https://pbs.twimg.com/media/FcWCyinacAEEQcC.jpg'                     # preview image
         )
