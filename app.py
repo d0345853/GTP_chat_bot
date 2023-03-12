@@ -254,23 +254,22 @@ def handle_message(event):
     #######################################
     # ----------- Voice to txt----------- #
     try:
-        if(enent.meaasge.tyoe == "audio"):
+        if(enent.meaasge.type == "audio"):
             audio_content = line_bot_api.get_message_content(event.message.id)
             path='./temp.mp3'                                       # temp
             with open(path,'wb') as audio_fd:
                 for audio_part in audio_content.iter_content():
                     audio_fd.write(audio_part)
             with open("temp.mp3","rd") as audio_file:       #loading audio file to openAI trans
-                model_id = 'whisper-1'
-            # 
-            response_4 = openai.Audio.transcribe(
-                model=model_id,  #
-                file=audio_file,    # response_format ='text' (Format: json, srt, vtt)
-            )
-            # 4. Output to line text
-            reply_msg = response_4['text']
-            text_message = TextSendMessage(text=reply_msg)              # string to TextSendMessage
-            line_bot_api.reply_message(event.reply_token,text_message)
+                model_id = 'whisper-1'                      #only this model
+                response_4 = openai.Audio.transcribe(
+                    model=model_id,  #
+                    file=audio_file,    # response_format ='text' (Format: json, srt, vtt)
+                )
+                # 4. Output to line text
+                reply_msg = response_4['text']
+                text_message = TextSendMessage(text=reply_msg)              # string to TextSendMessage
+                line_bot_api.reply_message(event.reply_token,text_message)
     except openai.error.OpenAIError as e:
         print(e.http_status)
         print(e.error)
