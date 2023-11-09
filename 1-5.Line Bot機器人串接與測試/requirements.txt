@@ -1,0 +1,14 @@
+fastapi
+line-bot-sdk
+flask
+bs4
+datetime
+pandas
+SnowNLP
+scipy
+openai
+pytz
+requests
+pymysql
+Pillow
+pytesseract
